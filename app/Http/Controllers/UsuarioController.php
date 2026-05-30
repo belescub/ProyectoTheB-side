@@ -11,7 +11,7 @@ class UsuarioController extends Controller
     $usuarios = Usuario::with('rol')->get();
     return view('usuarios.index', compact('usuarios'));
 }
-Migrations · Models · Controllers · Git
+
 public function create() {
     $roles = Rol::all();                  // necesario para el <select> del formulario
     return view('usuarios.create', compact('roles'));

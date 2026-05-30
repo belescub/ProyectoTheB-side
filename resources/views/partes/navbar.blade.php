@@ -18,9 +18,22 @@
         </div>
     <!--inicio de sesion-->
         <div class="col-12 col-md-4 order-3 d-flex justify-content-center justify-content-md-end">
-            <a href="/registro" class="nav-action">Crear Cuenta</a>
-            <span class="mx-2 text-secondary">|</span>
-            <a href="/login" class="nav-action">Iniciar Sesión</a>
+@auth
+    @if(auth()->user()->rol->nombre === 'admin')
+        <a href="/admin" class="nav-action">Panel Admin</a>
+    @else
+         <a href="/cliente" class="nav-action">Mi Cuenta</a>
+    @endif
+    <span class="mx-2 text-secondary">|</span>
+    <form action="{{ route('logout') }}" method="POST" style="display:inline;">
+        @csrf
+    <button type="submit" class="nav-action border-0 bg-transparent p-0"> Cerrar Sesión </button>
+    </form>
+@else
+    <a href="/registro" class="nav-action">Crear Cuenta</a>
+    <span class="mx-2 text-secondary">|</span>
+    <a href="/login" class="nav-action">Iniciar Sesión</a>
+@endauth
         </div>
     </div>
 </div>
