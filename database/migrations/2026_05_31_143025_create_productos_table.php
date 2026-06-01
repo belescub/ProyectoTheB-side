@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id(); //es una clave primaria: es unica para cada producto
             $table->string('nombre'); //textos cortos: VARCHAR(255) en la base
             $table->text('descripcion')->nullable(); //El `nullable()` permite que ese campo quede vacio.
-            $table->decimal('precio', 8, 2);      // hasta 999999.99. Numeros decimales, 8 digitos en total, 2 de ellos son los decimales
+            $table->decimal('precio', 8, 2);      // Numeros decimales, 8 digitos en total, 2 de ellos son los decimales. hasta 99999
             $table->unsignedInteger('stock')->default(0);
             $table->boolean('activo')->default(true); //Por defecto los productor nacen activos(true)
             $table->string('url_imagen')->nullable(); //Ruta de la imagen. Puede quedar vacia si el prooducto aun no tiene foto
