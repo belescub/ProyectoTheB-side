@@ -23,6 +23,6 @@ public function up(): void
         $table->rememberToken();
         $table->timestamps();
         $table->softDeletes();
-    });
-}
+        });
+    }
 };

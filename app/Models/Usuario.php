@@ -24,4 +24,8 @@ class Usuario extends Authenticatable {
     public function rol() {
         return $this->belongsTo(Rol::class, 'rol_id');
     }
+    //Relacion: usuario puede tener muchos tickets
+    public function ventas(){
+        return $this->hasMany(VentaCabecera::class, 'usuario_id');
+    }
 }
