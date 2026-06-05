@@ -17,6 +17,7 @@ class Venta_cabecera extends Model
         'total', 
         'fecha_venta',
         'estado',
+        'usuario_id',
     ];
 
     /**
