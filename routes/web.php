@@ -7,6 +7,7 @@ use App\Http\Controllers\RegistroController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ClienteController;
+use App\Models\Producto;
 
 Route::get('/', function () {
     return view('TheB-Side'); //pagina princial
@@ -51,3 +52,17 @@ Route::get('/cliente', [ClienteController::class, 'index']);
 
 Route::get('/admin', [AdminController::class, 'index']);
 Route::post('/admin/productos', [AdminController::class, 'store'])->name('admin.productos.store');
+
+Route::get('/productos/{categoria?}', function ($categoria = 'todos') {
+    if ($categoria === 'todos') {
+        // Trae todos los productos
+        $productos = Producto::all(); 
+    } else {
+        // Trae solo los productos de la categoría seleccionada
+        $productos = Producto::whereHas('categoria', function($query) use ($categoria) {
+            $query->where('nombre', $categoria);
+        })->get();
+    }
+
+    return view('productos', compact('productos', 'categoria'));
+});
