@@ -46,7 +46,6 @@ return new class extends Migration
     /**
      * Reverse the migrations.
      * Destruye la tabla si necesitamos revertir los cambios 
-     * (por ejemplo, al usar 'php artisan migrate:rollback' o 'migrate:fresh')
      */
     public function down(): void
     {

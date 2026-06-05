@@ -22,7 +22,9 @@ public function up(): void
 
         $table->rememberToken();
         $table->timestamps();
-        $table->softDeletes();
+        $table->softDeletes(); // Habilita el borrado lógico (SoftDeletes) 
+                            // Agrega la columna 'deleted_at'. Si se borra al usuario, no se elimina de la base de datos real, 
+                            // solo se le marca la fecha de borrado para mantener el historial intacto.
         });
     }
 };
