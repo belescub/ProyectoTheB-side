@@ -17,7 +17,7 @@ class UsuarioSeeder extends Seeder
             [
                 'nombre' => 'belen',
                 'email' => 'bel@gmail.com',
-                'password' => Hash::make('password'), // Cambiala por la contraseña real que usabas
+                'password' => Hash::make('password'), 
                 'rol_id' => 1,
                 'created_at' => now(),
                 'updated_at' => now(),

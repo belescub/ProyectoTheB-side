@@ -50,3 +50,4 @@ Route::post('/registro', [AuthController::class, 'registrar']);
 Route::get('/cliente', [ClienteController::class, 'index']);
 
 Route::get('/admin', [AdminController::class, 'index']);
+Route::post('/admin/productos', [AdminController::class, 'store'])->name('admin.productos.store');
