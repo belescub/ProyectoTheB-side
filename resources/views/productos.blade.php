@@ -5,8 +5,8 @@
     @forelse($productos as $producto)
         <div class="col-md-4 mb-4">
             <div class="card h-100" style="background-color: rgba(10, 10, 10, 0.6); border: 1px solid #77c040;">
-                <img src="{{ $producto->url_imagen ?? asset('img/default.png') }}" class="card-img-top" alt="{{ $producto->nombre }}">
-                
+                <img src="{{asset('storage/' . ($producto->url_imagen)) }}" class="card-img-top" alt="{{ $producto->nombre }}">
+
                 <div class="card-body text-white">
                     <h5 class="card-title" style="color: #77c040;">{{ $producto->nombre }}</h5>
                     <p class="card-text">{{ $producto->descripcion }}</p>
@@ -22,5 +22,4 @@
         </div>
     @endforelse
 </div>
-
 @endsection
