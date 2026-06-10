@@ -35,9 +35,6 @@ Route::get('/productos/{categoria?}', function ($categoria = 'todos') {
     return view('productos', ['categoria' => $categoria]); 
 });
 
-Route::get('/carrito', function () { 
-    return view('en-construccion'); 
-});
 
 /** Rutas de autenticación */
 Route::get('/login', [AuthController::class, 'formularioLogin']) ->name('login');
@@ -65,4 +62,21 @@ Route::get('/productos/{categoria?}', function ($categoria = 'todos') {
     }
 
     return view('productos', compact('productos', 'categoria'));
+});
+
+use App\Http\Controllers\CarritoController;
+
+Route::middleware('auth')->group(function () {
+
+    Route::get('/carrito', [CarritoController::class, 'index'])
+        ->name('carrito.index');
+
+    Route::post('/carrito/agregar/{producto}', [CarritoController::class, 'agregar'])
+        ->name('carrito.agregar');
+
+    Route::delete('/carrito/eliminar/{id}', [CarritoController::class, 'eliminar'])
+        ->name('carrito.eliminar');
+
+    Route::post('/carrito/confirmar', [CarritoController::class, 'confirmar'])
+        ->name('carrito.confirmar');
 });

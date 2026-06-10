@@ -34,7 +34,7 @@ class Venta_cabeceraController extends Controller
         ]);
 
         // Creamos la venta vacía primero (necesitamos que nazca para tener el venta_id)
-        $venta = Venta_cabecera::create([
+        $venta_cabecera = Venta_cabecera::create([
             'total' => 0 // Arranca en 0, lo calculamos ahora
         ]);
 
@@ -51,7 +51,7 @@ class Venta_cabeceraController extends Controller
 
             // ¡CREAMOS EL RENGLÓN (Venta_detalle)!
             Venta_detalle::create([
-                'venta_id' => $venta->id, // Lo conectamos al ticket recién creado
+                'venta_cabecera_id' => $venta_cabecera->id, // Lo conectamos al ticket recién creado
                 'producto_id' => $producto->id,
                 'cantidad' => $cantidad,
                 'precio_unitario' => $producto->precio, // Congelamos el precio actual

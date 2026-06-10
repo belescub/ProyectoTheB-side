@@ -24,8 +24,8 @@ class Venta_cabecera extends Model
      * Relacion: 1 a muchos (has many)
      * Una venta (el ticket general) tiene muchos detalles
      */
-    public function venta_detalles(){
-        return $this->hasMany(Venta_detalle::class);
+    public function detalles(){
+    return $this->hasMany(Venta_detalle::class);
     }
 
     //Relacion: este ticket le pertenece a un usuario específico.

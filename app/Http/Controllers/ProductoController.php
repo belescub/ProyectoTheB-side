@@ -30,7 +30,7 @@ class ProductoController extends Controller
     public function create()
     {
         //Se necesitan todas las categorias activas para armar el <select> en el form
-        $categorias = Categoria::where('activo, true')->get();
+        $categorias = Categoria::where('activo', true)->get();
 
         return view('productos.create', compact('categorias'));
     }
@@ -46,7 +46,7 @@ class ProductoController extends Controller
             'nombre'   => 'required|string|max:255',
             'precio'   => 'required|numeric|min:0',
             'stock'    => 'required|integer|min:0',
-            'categoria_id' => 'required|exists:categoria, id' //verifica que la categoria exista
+            'categoria_id' => 'required|exists:categorias,id' //verifica que la categoria exista
         ]);
         //Guardamos el producto mágicamente usando Mass Assignment ($fillable)
         Producto::create($request->all());

@@ -11,8 +11,12 @@
                     <h5 class="card-title" style="color: #77c040;">{{ $producto->nombre }}</h5>
                     <p class="card-text">{{ $producto->descripcion }}</p>
                     <p class="card-text fw-bold">Precio: ${{ number_format($producto->precio, 2, ',', '.') }}</p>
-                    
-                    <a href="#" class="btn btn-outline-success">Añadir al carrito</a>
+                    <form action="{{ route('carrito.agregar', $producto->id) }}" method="POST">
+                        @csrf
+                        <div class="input-group mb-3">
+                            <input type="number" name="cantidad" class="form-control" value="1" min="1" max="{{ $producto->stock }}">
+                            <button class="btn btn-success" type="submit">Agregar al carrito</button>
+                        </div>
                 </div>
             </div>
         </div>

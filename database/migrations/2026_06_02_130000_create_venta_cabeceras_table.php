@@ -22,7 +22,7 @@ return new class extends Migration
             $table->decimal('total', 10, 2)->default(0); 
             
             // Registra la fecha y hora exacta en la que se realizó la venta
-            $table->dateTime('fecha_venta');
+            $table->dateTime('fecha_venta')->nullable(); // con nullable puede empezar vacío
             
             // Guarda el estado del ticket/pedido (ej: pendiente, pagado, despachado). 
             // Por defecto arranca en 'pendiente' apenas se crea la venta.
