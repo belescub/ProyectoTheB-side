@@ -15,8 +15,13 @@
                         @csrf
                         <div class="input-group mb-3">
                             <input type="number" name="cantidad" class="form-control" value="1" min="1" max="{{ $producto->stock }}">
+                            <form action="/carrito/agregar" method="POST">
+                                @csrf
+                                <input type="hidden" name="producto_id" value="{{ $producto->id }}">
+                                <input type="hidden" name="cantidad" value="1">
                             <button class="btn btn-success" type="submit">Agregar al carrito</button>
                         </div>
+                    </form>
                 </div>
             </div>
         </div>

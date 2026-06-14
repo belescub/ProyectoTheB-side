@@ -8,7 +8,9 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\CarritoController;
+use App\Http\Controllers\UsuarioController; 
 use App\Models\Producto;
+use App\Http\Controllers\CarritoController;
 
 Route::get('/', function () {
     return view('TheB-Side'); //pagina princial
@@ -32,10 +34,13 @@ Route::get('/quienessomos', function () {
     return view('quienes-somos'); 
 });
 
-Route::get('/productos/{categoria?}', function ($categoria = 'todos') { 
+/**Route::get('/productos/{categoria?}', function ($categoria = 'todos') { 
     return view('productos', ['categoria' => $categoria]); 
 });
 
+/**Route::get('/productos/{categoria?}', function ($categoria = 'todos') { 
+    return view('productos', ['categoria' => $categoria]); 
+});*/
 
 /** Rutas de autenticación */
 Route::get('/login', [AuthController::class, 'formularioLogin']) ->name('login');
@@ -81,3 +86,18 @@ Route::middleware('auth')->group(function () {
     Route::post('/carrito/confirmar', [CarritoController::class, 'confirmar'])
         ->name('carrito.confirmar');
 });
+
+Route::put('/admin/usuario/{id}/baja', [AdminController::class, 'darBaja'])
+      ->name('admin.usuario.baja');
+
+Route::put('/admin/usuario/{id}/hacer-admin', [AdminController::class, 'hacerAdmin'])
+      ->name('admin.usuario.hacerAdmin');
+
+Route::get('/admin/productos/{id}/editar', [AdminController::class, 'edit'])
+      ->name('admin.producto.editar');
+
+Route::put('/admin/productos/{id}', [AdminController::class, 'update'])
+      ->name('admin.producto.update');
+
+Route::delete('/admin/productos/{id}', [AdminController::class, 'destroy'])
+      ->name('admin.producto.eliminar');

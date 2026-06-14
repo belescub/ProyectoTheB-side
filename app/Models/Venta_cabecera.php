@@ -30,6 +30,6 @@ class Venta_cabecera extends Model
 
     //Relacion: este ticket le pertenece a un usuario específico.
     public function usuario(){
-        return $this->belongsTo(User::class, 'usuario_id');
+        return $this->belongsTo(Usuario::class, 'usuario_id');
     } 
 }

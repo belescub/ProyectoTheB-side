@@ -2,8 +2,7 @@
 <div class="container">
     <div class="row">
         <div class="col">
-            <h3> Nosotros </h3>
-                <a href="/quienessomos"><i class="fa-solid fa-users"></i></a>
+            <h3> Términos de uso y contacto </h3>
                 <a href="/terminosdeuso" ><i class="fa-solid fa-gavel"></i></a>
                 <a href="/contacto" ><i class="fa-solid fa-envelope"></i></a>
         </div>
@@ -24,9 +23,9 @@
         </div>
         <div class="col">
             <h3> Síguenos </h3>
-            <a href="https://open.spotify.com/intl-es"><i class="bi bi-spotify"></i></a>
-            <a href="https://www.instagram.com/?hl=es"><i class="bi bi-instagram"></i></a>
-            <a href="https://www.tiktok.com/"><i class="bi bi-tiktok"></i></a>
+            <a href="https://open.spotify.com/intl-es" target="_blank" rel="noopener noreferrer"><i class="bi bi-spotify"></i></a>
+            <a href="https://www.instagram.com/?hl=es" target="_blank" rel="noopener noreferrer"><i class="bi bi-instagram"></i></a>
+            <a href="https://www.tiktok.com/" target="_blank" rel="noopener noreferrer"><i class="bi bi-tiktok"></i></a>
         </div>
 </div>
 </footer>

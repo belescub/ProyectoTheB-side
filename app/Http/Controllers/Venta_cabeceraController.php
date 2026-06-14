@@ -13,19 +13,21 @@ class Venta_cabeceraController extends Controller
     {
         // Traemos las venta_cabeceras. 
         // Usamos with('detalles') para que traiga los renglones de una sola vez
-        $venta_cabeceras = Venta_cabecera::with('detalles')->get();
-        return view('venta_cabeceras.index', compact('venta_cabeceras'));
+        $ventas = Venta_cabecera::with(['venta_detalles', 'usuario'])
+            ->latest()
+            ->get();
+        
+        return view('venta_cabeceras.index', compact('ventas'));
+        
     }
 
-    public function create()
-    {
+    public function create(){
         // Para hacer una venta, se necesita conocer el precio del producto
         $productos = Producto::where('activo', true)->where('stock', '>', 0)->get();
         return view('venta_cabeceras.create', compact('productos'));
     }
 
-    public function store(Request $request)
-    {
+    public function store(Request $request){
         // Validamos que nos manden productos y cantidades
         // (Esto asume que el formulario manda arreglos: productos[] y cantidades[])
         $request->validate([
@@ -64,8 +66,8 @@ class Venta_cabeceraController extends Controller
         }
 
         // 4. Actualizamos el total real de la venta
-        $venta_cabecera->total = $totalVenta;
-        $venta_cabecera->save();
+        $venta->total = $totalVenta;
+        $venta->save();
 
         return redirect()->route('venta_cabeceras.index')->with('success', '¡Venta registrada con éxito!');
     }
@@ -82,7 +84,6 @@ class Venta_cabeceraController extends Controller
     {
         // Por regla general contable, LAS venta_cabeceras NO SE EDITAN. 
         // Si hay un error, se anula (destroy) y se hace una nueva.
-        // Podés dejar esto vacío o retornar un error.
         return redirect()->route('venta_cabeceras.index')->with('error', 'Las ventas no pueden ser modificadas.');
     }
 
@@ -94,7 +95,6 @@ class Venta_cabeceraController extends Controller
     public function destroy(Venta_cabecera $venta_cabecera)
     {
         // Anula la venta (SoftDeletes). 
-        // Un programador pro acá también haría un bucle para devolver el stock a los productos ;)
         $venta_cabecera->delete();
         return redirect()->route('venta_cabeceras.index')->with('success', '¡Venta anulada!');
     }

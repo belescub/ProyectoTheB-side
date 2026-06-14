@@ -24,13 +24,29 @@ class AdminController extends Controller
 
         $productos = Producto::with('categoria')->latest()->take(5)->get();
 
+        $usuarios = Usuario::withTrashed()->get();
+
+        $ventas = Venta_cabecera::with(['venta_detalles.producto', 'usuario'])
+            ->latest()
+            ->get();
+        
+        // --- PARA EL MODO EDICION ---
+        $productoEditar = null;
+        if (request()->has('editar')) {
+            $productoEditar = Producto::find(request('editar'));
+        }
+        // -------------------------------------------
+
         return view('backend.admin.dashboard', compact(
             'totalClientes',
             'totalCategorias', 
             'totalProductos',
             'totalVentas', 
             'productos',
-            'categorias' // <-- La pasamos a la vista
+            'categorias',
+            'usuarios', 
+            'ventas',
+            'productoEditar'
         )); 
     }
 
@@ -74,5 +90,67 @@ public function store(Request $request)
         Producto::create($data);
 
         return redirect('/admin')->with('success', '¡Producto agregado con éxito!');
+    }
+
+    public function darBaja($id){
+        $usuario = Usuario::findOrFail($id);
+
+        $usuario->delete(); // llena deleted_at
+
+        return redirect()->back()->with('success', 'Usuario dado de baja');
+    }
+
+    public function hacerAdmin($id){
+        $usuario = Usuario::findOrFail($id);
+
+        $usuario->rol_id = 1; 
+        $usuario->save();
+
+        return back()->with('success', 'Usuario ahora es administrador');
+    }
+
+
+    // --------------------------------------------------------
+    // FUNCIONES PARA EL INVENTARIO (EDITAR, ACTUALIZAR Y ELIMINAR)
+    // --------------------------------------------------------
+
+    public function edit($id){
+        $producto = Producto::findOrFail($id);
+        $categorias = Categoria::all();
+        
+        // Retornamos una vista para editar el producto. 
+        return view('backend.admin.editar', compact('producto', 'categorias'));
+    }
+
+    public function update(Request $request, $id){
+        $producto = Producto::findOrFail($id);
+
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'descripcion' => 'nullable|string',
+            'precio' => 'required|numeric|min:0',
+            'stock' => 'required|integer|min:0',
+            'categoria_id' => 'required|exists:categorias,id',
+            'url_imagen' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048', // Es nullable porque puede que no quiera cambiar la foto
+        ]);
+
+        $data = $request->except(['url_imagen']);
+
+        // Si se sube una imagen nueva, la guardamos y reemplazamos la anterior
+        if ($request->hasFile('url_imagen')) {
+            $path = $request->file('url_imagen')->store('productos', 'public');
+            $data['url_imagen'] = $path; 
+        }
+
+        $producto->update($data);
+
+        return redirect('/admin?inventario=1')->with('success', '¡Producto actualizado correctamente!');
+    }
+
+    public function destroy($id){
+        $producto = Producto::findOrFail($id);
+        $producto->delete(); 
+
+        return redirect('/admin?inventario=1')->with('success', '¡Producto eliminado del inventario!');
     }
 }
