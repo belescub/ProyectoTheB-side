@@ -64,7 +64,7 @@
                             <i class="fas fa-chevron-right text-muted" style="font-size: 0.8rem;"></i>
                         </a>
                         <a href="?inventario=1" class="btn d-flex align-items-center justify-content-between p-3 text-start transition" style="background-color: rgba(255, 255, 255, 0.03); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px;">
-                            <span><i class="fas fa-boxes me-2" style="color: #77c040;"></i> Administrar Inventario</span>
+                            <span><i class="fas fa-boxes me-2" style="color: #023d0c;"></i> Administrar Inventario</span>
                             <i class="fas fa-chevron-right text-muted" style="font-size: 0.8rem;"></i>
                         </a>
                         <a href="?ventas=1" class="btn d-flex align-items-center justify-content-between p-3 text-start transition" 
@@ -74,7 +74,7 @@
                         </a>
                         <a href="?clientes=1" class="btn d-flex align-items-center justify-content-between p-3 text-start transition" 
                            style="background-color: rgba(255, 255, 255, 0.03); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px;">
-                            <span><i class="fas fa-receipt me-2" style="color: #77c040;"></i> Historial de Clientes</span>
+                            <span><i class="fas fa-receipt me-2" style="color: #023d0c;"></i> Historial de Clientes</span>
                             <i class="fas fa-chevron-right text-muted" style="font-size: 0.8rem;"></i>
                         </a>
                     </div>

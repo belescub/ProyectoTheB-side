@@ -9,28 +9,74 @@ use App\Models\Producto;
 
 class CarritoController extends Controller
 {
+public function index()
+{
+    if (
+        auth()->check() &&
+        auth()->user()->rol &&
+        strtolower(auth()->user()->rol->nombre) === 'admin'
+    ) {
+        return redirect('/')
+            ->with('error', 'Los administradores no tienen acceso al carrito.');
+    }
+
+    $carrito = $this->obtenerCarrito();
+
+    $items = Venta_detalle::with('producto')
+        ->where('venta_cabecera_id', $carrito->id)
+        ->get();
+
+    return view('backend.usuarios.carrito', compact('items', 'carrito'));
+}
     private function obtenerCarrito() 
     {
         return Venta_cabecera::firstOrCreate(['usuario_id' => auth()->id(),'estado' => 'carrito'],['total' => 0, 'fecha_venta' => now()]);
     }
-    public function index(){
-        $carrito = $this->obtenerCarrito();
-        $items = Venta_detalle::with('producto')->where('venta_cabecera_id', $carrito->id)->get();
-        return view('backend.usuarios.carrito',compact('items', 'carrito'));
+public function agregar(Request $request, Producto $producto)
+{
+    // 0. ¡FILTRO DE SEGURIDAD CORREGIDO!: Accedemos al nombre del rol mediante la relación
+    if (auth()->check() && auth()->user()->rol && strtolower(auth()->user()->rol->nombre) === 'admin') {
+        return redirect()->back()->with('error', '¡Los administradores no pueden realizar compras en la tienda!');
     }
-    public function agregar(Producto $producto){
-        $carrito = $this->obtenerCarrito();
-        $item = Venta_detalle::where('venta_cabecera_id', $carrito->id)->where('producto_id', $producto->id)->first();
-            if ($item) {
-                $item->cantidad++;
-                 $item->subtotal = $item->cantidad * $item->precio_unitario;
-                 $item->save();
-            } else {
-                Venta_detalle::create(['venta_cabecera_id' => $carrito->id,'producto_id' => $producto->id,'cantidad' => 1,'precio_unitario' => $producto->precio,'subtotal' => $producto->precio]);
-             }
-             $this->recalcularTotal($carrito);
-         return redirect()->back();
+
+    // 1. Capturamos la cantidad que viene del formulario
+    $cantidadSolicitada = $request->input('cantidad', 1);
+    
+    $carrito = $this->obtenerCarrito();
+    
+    // 2. Buscamos si el producto ya está en el carrito
+    $item = Venta_detalle::where('venta_cabecera_id', $carrito->id)
+                         ->where('producto_id', $producto->id)
+                         ->first();
+
+    // 3. Calculamos cuánto habría en total si permitimos esta acción
+    $cantidadActualEnCarrito = $item ? $item->cantidad : 0;
+    $cantidadTotalProyectada = $cantidadActualEnCarrito + $cantidadSolicitada;
+
+    // 4. ¡EL FILTRO DE SEGURIDAD! Comparamos contra el stock real
+    if ($cantidadTotalProyectada > $producto->stock) {
+        return redirect()->back()->with('error', '¡Ups! Lo sentimos pero no contamos con esa cantidad en stock.');
     }
+
+    // 5. Si pasó el filtro, guardamos o actualizamos normal
+    if ($item) {
+        $item->cantidad = $cantidadTotalProyectada;
+        $item->subtotal = $item->cantidad * $item->precio_unitario;
+        $item->save();
+    } else {
+        Venta_detalle::create([
+            'venta_cabecera_id' => $carrito->id,
+            'producto_id'       => $producto->id,
+            'cantidad'          => $cantidadSolicitada,
+            'precio_unitario'   => $producto->precio,
+            'subtotal'          => $producto->precio * $cantidadSolicitada
+        ]);
+    }
+
+    $this->recalcularTotal($carrito);
+    
+    return redirect()->back()->with('success', '¡Producto agregado al carrito con éxito!');
+}
     private function recalcularTotal($carrito)
 {
     $total = Venta_detalle::where(

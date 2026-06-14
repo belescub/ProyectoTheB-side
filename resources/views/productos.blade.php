@@ -1,6 +1,19 @@
 @extends('plantilla')
 @section('contenido')
 
+@if(session('error'))
+    <div class="alert alert-danger alert-dismissible fade show" role="alert" style="background-color: rgba(220, 53, 69, 0.8); color: white; border: none;">
+        {{ session('error') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+
+@if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert" style="background-color: rgba(119, 192, 64, 0.8); color: white; border: none;">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
 <div class="row catalogo-row">
     @forelse($productos as $producto)
         <div class="col-md-4 mb-4">
@@ -11,17 +24,22 @@
                     <h5 class="card-title" style="color: #77c040;">{{ $producto->nombre }}</h5>
                     <p class="card-text">{{ $producto->descripcion }}</p>
                     <p class="card-text fw-bold">Precio: ${{ number_format($producto->precio, 2, ',', '.') }}</p>
-                    <form action="{{ route('carrito.agregar', $producto->id) }}" method="POST">
-                        @csrf
-                        <div class="input-group mb-3">
-                            <input type="number" name="cantidad" class="form-control" value="1" min="1" max="{{ $producto->stock }}">
-                            <form action="/carrito/agregar" method="POST">
-                                @csrf
-                                <input type="hidden" name="producto_id" value="{{ $producto->id }}">
-                                <input type="hidden" name="cantidad" value="1">
-                            <button class="btn btn-success" type="submit">Agregar al carrito</button>
-                        </div>
-                    </form>
+
+{{-- Verificamos si el nombre del rol es admin --}}
+@if(auth()->check() && auth()->user()->rol && strtolower(auth()->user()->rol->nombre) === 'admin')
+    <div class="alert alert-warning p-2 text-center mt-2 mb-0" style="font-size: 0.9rem;">
+        Modo Admin: Compras deshabilitadas
+    </div>
+@else
+    <form action="{{ route('carrito.agregar', $producto->id) }}" method="POST">
+        @csrf
+        <input type="number" name="cantidad" value="1" min="1" max="{{ $producto->stock }}" class="form-control mb-2">
+        
+        <button type="submit" class="catalog-cart-icon bg-transparent border-0">
+            <i class="bi bi-cart-dash-fill"></i>
+        </button>
+    </form>
+@endif
                 </div>
             </div>
         </div>

@@ -10,7 +10,7 @@ use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\CarritoController;
 use App\Http\Controllers\UsuarioController; 
 use App\Models\Producto;
-use App\Http\Controllers\CarritoController;
+
 
 Route::get('/', function () {
     return view('TheB-Side'); //pagina princial
