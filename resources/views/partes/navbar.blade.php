@@ -3,14 +3,16 @@
     <div class="row align-items-center px-4 gy-3">
         <!--busqueda--> 
         <div class="col-12 col-md-4 order-2 order-md-1 d-flex justify-content-center justify-content-md-start">
-            <div class="search-container">
-            <input type="text" class="search-input" placeholder="Buscar...">
-            <button class="search-btn">
-            <i class="bi bi-search"></i>
+    <div class="search-container"> <form action="{{ route('productos.buscar') }}" method="GET" style="display: flex; width: 100%;">
+            <input type="text" name="q" class="search-input" placeholder="Buscar..." required>
+            <button type="submit" class="search-btn">
+                <i class="bi bi-search"></i>
             </button>
-        </div>
+        </form>
+        
     </div>
-    <!--logo-->
+</div>
+        <!--logo-->
         <div class="col-12 col-md-4 order-1 order-md-2 text-center">
             <a href="/">
                 <img src="{{ asset('assets/img/logo1.png') }}" alt="The B-Side Logo" width="200" class="logo-glow">

@@ -108,4 +108,17 @@ class ProductoController extends Controller
         return redirect()->route('productos.index')
                         ->with('success', 'Producto eliminado de la lista');
     }
+public function buscar(Request $request){
+    // Capturamos lo que el usuario ingresó en el input name="q"
+    $query = $request->input('q');
+
+    // Buscamos en el modelo Producto coincidencias
+    $productos = Producto::where('nombre', 'LIKE', "%{$query}%")
+                         ->orWhere('descripcion', 'LIKE', "%{$query}%")
+                         ->get();
+
+    // ¡ACÁ ESTÁ LA CORRECCIÓN! 
+    // Como productos.blade.php está en la raíz de views, solo ponemos 'productos'
+    return view('productos', compact('productos', 'query'));
+}
 }

@@ -16,6 +16,9 @@
 @endif
 <div class="row catalogo-row">
     @forelse($productos as $producto)
+        @if(isset($query))
+            <h3 class="text-white mb-4" style="color: #77c040;">Resultados para: "{{ $query }}"</h3>
+        @endif
         <div class="col-md-4 mb-4">
             <div class="card h-100" style="background-color: rgba(10, 10, 10, 0.6); border: 1px solid #77c040;">
                 <img src="{{asset('storage/' . ($producto->url_imagen)) }}" class="card-img-top" alt="{{ $producto->nombre }}">

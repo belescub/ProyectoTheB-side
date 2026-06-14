@@ -9,6 +9,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\CarritoController;
 use App\Http\Controllers\UsuarioController; 
+use App\Http\Controllers\ProductoController; 
 use App\Models\Producto;
 
 
@@ -19,8 +20,6 @@ Route::get('/', function () {
 Route::get('/contacto', function () {
     return view('contacto'); 
 });
-
-Route::post('/contacto', [ContactoController::class, 'procesar']);
 
 Route::get('/terminosdeuso', function () {
     return view('terminosdeuso'); 
@@ -33,14 +32,6 @@ Route::get('/privacidad', function(){
 Route::get('/quienessomos', function () {
     return view('quienes-somos'); 
 });
-
-/**Route::get('/productos/{categoria?}', function ($categoria = 'todos') { 
-    return view('productos', ['categoria' => $categoria]); 
-});
-
-/**Route::get('/productos/{categoria?}', function ($categoria = 'todos') { 
-    return view('productos', ['categoria' => $categoria]); 
-});*/
 
 /** Rutas de autenticación */
 Route::get('/login', [AuthController::class, 'formularioLogin']) ->name('login');
@@ -101,3 +92,6 @@ Route::put('/admin/productos/{id}', [AdminController::class, 'update'])
 
 Route::delete('/admin/productos/{id}', [AdminController::class, 'destroy'])
       ->name('admin.producto.eliminar');
+
+      // Ruta para el buscador
+Route::get('/buscar', [ProductoController::class, 'buscar'])->name('productos.buscar');
