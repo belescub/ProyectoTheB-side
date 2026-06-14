@@ -10,6 +10,7 @@ use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\CarritoController;
 use App\Http\Controllers\UsuarioController; 
 use App\Http\Controllers\ProductoController; 
+use App\Http\Controllers\AdminConsultaController;
 use App\Models\Producto;
 
 
@@ -95,3 +96,20 @@ Route::delete('/admin/productos/{id}', [AdminController::class, 'destroy'])
 
       // Ruta para el buscador
 Route::get('/buscar', [ProductoController::class, 'buscar'])->name('productos.buscar');
+
+Route::post('/contacto', [ContactoController::class, 'procesar']);
+Route::prefix('admin')->middleware(['auth'])->group(function () {
+    
+    Route::get('/consultas', [AdminConsultaController::class, 'index'])->name('admin.consultas.index');
+    Route::post('/consultas/{consulta}/toggle-leido', [AdminConsultaController::class, 'toggleLeido'])->name('admin.consultas.leido');
+    Route::post('/consultas/{consulta}/responder', [AdminConsultaController::class, 'responder'])->name('admin.consultas.responder');
+    Route::delete('/consultas/{consulta}', [AdminConsultaController::class, 'destroy'])->name('admin.consultas.destroy');
+
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/cliente', function () { return view('backend.usuarios.cliente'); })->name('cliente');
+    Route::get('/cliente/consultas', [ContactoController::class, 'misConsultas'])->name('cliente.consultas');
+    Route::get('/cliente/compras', [CompraController::class, 'historial'])->name('compras.historial');
+    Route::get('/cliente/facturas', [FacturaController::class, 'index'])->name('facturas.index');
+});

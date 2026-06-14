@@ -71,10 +71,16 @@
                         @endforeach
                     </ul>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link nav-custom-link" href="/contacto">Contacto</a>
-                </li>
-
+                {{-- Cambiamos el enlace dinámicamente según el rol --}}
+                    @if(auth()->check() && auth()->user()->rol->nombre === 'admin')
+                        <li class="nav-item">
+                            <a class="nav-link nav-custom-link" href="{{ route('admin.consultas.index') }}">Consultas Clientes</a>
+                        </li>
+                    @else
+                        <li class="nav-item">
+                            <a class="nav-link nav-custom-link" href="/contacto">Contacto</a>
+                        </li>
+                    @endif
                 <li class="nav-item">
                     <a class="nav-link nav-custom-link" href="/quienessomos">Quiénes somos</a>
                 </li>

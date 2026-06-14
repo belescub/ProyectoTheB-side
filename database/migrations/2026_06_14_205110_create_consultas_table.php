@@ -1,0 +1,36 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('consultas', function (Blueprint $table) {
+            $table->id();
+            $table->string('nombre');
+            $table->string('telefono')->nullable(); // Lo ponemos nullable por si no lo llenan
+        $table->string('email');
+        $table->text('mensaje');
+        
+        $table->boolean('leido')->default(false); // Arranca como "no leído" (false)
+        $table->text('respuesta')->nullable();    // Acá el admin guardará su respuesta
+        
+        $table->timestamps();
+        $table->softDeletes();
+    });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('consultas');
+    }
+};

@@ -34,7 +34,7 @@ public function index()
     }
 public function agregar(Request $request, Producto $producto)
 {
-    // 0. ¡FILTRO DE SEGURIDAD CORREGIDO!: Accedemos al nombre del rol mediante la relación
+    // 0.Accedemos al nombre del rol mediante la relación
     if (auth()->check() && auth()->user()->rol && strtolower(auth()->user()->rol->nombre) === 'admin') {
         return redirect()->back()->with('error', '¡Los administradores no pueden realizar compras en la tienda!');
     }
