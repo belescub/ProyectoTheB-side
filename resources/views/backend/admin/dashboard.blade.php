@@ -21,7 +21,7 @@
     {{-- Tarjetas de resumen --}}
     <div class="row g-4 mb-5">
         @php
-            // Definimos un array para simplificar las tarjetas y asegurar el color blanco
+            /** Definimos un array para simplificar las tarjetas y asegurar el color blanco*/ 
             $tarjetas = [
                 ['titulo' => 'Productos', 'valor' => $totalProductos, 'icono' => 'fa-box'],
                 ['titulo' => 'Ventas Totales', 'valor' => $totalVentas, 'icono' => 'fa-shopping-cart'],
@@ -60,16 +60,16 @@
                         {{-- Estilos ajustados para que el texto del botón sea blanco puro --}}
                         <a href="?nuevo=1" class="btn d-flex align-items-center justify-content-between p-3 text-start transition" 
                            style="background-color: rgba(119, 192, 64, 0.1); color: #ffffff; border: 1px solid rgba(119, 192, 64, 0.3); border-radius: 8px;">
-                            <span><i class="fas fa-plus-circle me-2" style="color: #77c040;"></i> Agregar Nuevo Producto</span>
+                            <span><i class="fas fa-plus-circle me-2" style="color: #023d0c;"></i> Agregar Nuevo Producto</span>
                             <i class="fas fa-chevron-right text-muted" style="font-size: 0.8rem;"></i>
                         </a>
                         <a href="#" class="btn d-flex align-items-center justify-content-between p-3 text-start transition" style="background-color: rgba(255, 255, 255, 0.03); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px;">
-                            <span><i class="fas fa-boxes me-2" style="color: #77c040;"></i> Administrar Inventario</span>
+                            <span><i class="fas fa-boxes me-2" style="color: #023d0c;"></i> Administrar Inventario</span>
                             <i class="fas fa-chevron-right text-muted" style="font-size: 0.8rem;"></i>
                         </a>
                         <a href="#" class="btn d-flex align-items-center justify-content-between p-3 text-start transition" 
                            style="background-color: rgba(255, 255, 255, 0.03); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px;">
-                            <span><i class="fas fa-receipt me-2" style="color: #77c040;"></i> Historial de Ventas</span>
+                            <span><i class="fas fa-receipt me-2" style="color: #023d0c;"></i> Historial de Ventas</span>
                             <i class="fas fa-chevron-right text-muted" style="font-size: 0.8rem;"></i>
                         </a>
                     </div>

@@ -7,6 +7,7 @@ use App\Http\Controllers\RegistroController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ClienteController;
+use App\Http\Controllers\CarritoController;
 use App\Models\Producto;
 
 Route::get('/', function () {
@@ -64,7 +65,7 @@ Route::get('/productos/{categoria?}', function ($categoria = 'todos') {
     return view('productos', compact('productos', 'categoria'));
 });
 
-use App\Http\Controllers\CarritoController;
+
 
 Route::middleware('auth')->group(function () {
 
