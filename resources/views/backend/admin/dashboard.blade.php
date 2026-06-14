@@ -63,13 +63,18 @@
                             <span><i class="fas fa-plus-circle me-2" style="color: #77c040;"></i> Agregar Nuevo Producto</span>
                             <i class="fas fa-chevron-right text-muted" style="font-size: 0.8rem;"></i>
                         </a>
-                        <a href="#" class="btn d-flex align-items-center justify-content-between p-3 text-start transition" style="background-color: rgba(255, 255, 255, 0.03); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px;">
+                        <a href="?inventario=1" class="btn d-flex align-items-center justify-content-between p-3 text-start transition" style="background-color: rgba(255, 255, 255, 0.03); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px;">
                             <span><i class="fas fa-boxes me-2" style="color: #77c040;"></i> Administrar Inventario</span>
                             <i class="fas fa-chevron-right text-muted" style="font-size: 0.8rem;"></i>
                         </a>
-                        <a href="#" class="btn d-flex align-items-center justify-content-between p-3 text-start transition" 
+                        <a href="?ventas=1" class="btn d-flex align-items-center justify-content-between p-3 text-start transition" 
                            style="background-color: rgba(255, 255, 255, 0.03); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px;">
                             <span><i class="fas fa-receipt me-2" style="color: #77c040;"></i> Historial de Ventas</span>
+                            <i class="fas fa-chevron-right text-muted" style="font-size: 0.8rem;"></i>
+                        </a>
+                        <a href="?clientes=1" class="btn d-flex align-items-center justify-content-between p-3 text-start transition" 
+                           style="background-color: rgba(255, 255, 255, 0.03); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px;">
+                            <span><i class="fas fa-receipt me-2" style="color: #77c040;"></i> Historial de Clientes</span>
                             <i class="fas fa-chevron-right text-muted" style="font-size: 0.8rem;"></i>
                         </a>
                     </div>
@@ -162,6 +167,267 @@
                         </form>
                     </div>
                 </div>
+
+
+                {{-- Boton que nos direcciona a la pagina del listado de clientes --}}
+
+            @elseif(request()->has('clientes'))
+                <div class="card h-100 text-white"
+                    style="background-color: rgba(10, 10, 10, 0.4); border: 1px solid rgba(255, 255, 255, 0.1);">
+
+            <div class="card-header border-0 bg-transparent d-flex justify-content-between align-items-center pt-4 px-4">
+                    <h5 class="fw-bold mb-0" style="color: #77c040;">Historial de Clientes</h5>
+
+                <a href="?" class="text-decoration-none font-monospace text-light">
+                <i class="fas fa-arrow-left me-1"></i> Volver
+                </a>
+            </div>
+
+    <div class="card-body px-4">
+
+        <p>Total de clientes: <strong>{{ $usuarios->count() }}</strong></p>
+
+        <div class="table-responsive">
+            <table class="table table-dark table-hover text-white">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Email</th>
+                        <th>Rol</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach($usuarios as $usuario)
+                        <tr>
+                            <td>{{ $usuario->id }}</td>
+                            <td>{{ $usuario->nombre }}</td>
+                            <td>{{ $usuario->email }}</td>
+                            <td>{{ $usuario->rol->nombre }}</td>
+                            <td>
+                                @if($usuario->deleted_at)
+                                    <span class="badge bg-danger">Inactivo</span>
+                                @else
+                                    <span class="badge bg-success">Activo</span>
+                                @endif
+                            </td>
+                            <td>
+
+                                {{-- Dar de baja --}}
+                                <form action="{{ route('admin.usuario.baja', $usuario->id) }}" method="POST" class="d-inline">
+                                    @csrf
+                                    @method('PUT')
+                                    <button class="btn btn-danger btn-sm">
+                                        Dar de baja
+                                    </button>
+                                </form>
+
+                                {{-- Hacer admin --}}
+                                @if($usuario->rol != 'admin')
+                                    <form action="{{ route('admin.usuario.hacerAdmin', $usuario->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        @method('PUT')
+                                        <button class="btn btn-success btn-sm">
+                                            Hacer Admin
+                                        </button>
+                                    </form>
+                                @endif
+
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+            {{-- TABLA DE VENTAS --}}
+
+            @elseif(request()->has('ventas'))
+             <div class="card h-100 text-white"
+                style="background-color: rgba(10, 10, 10, 0.4); border: 1px solid rgba(255, 255, 255, 0.1);">
+
+        <div class="card-header border-0 bg-transparent d-flex justify-content-between align-items-center pt-4 px-4">
+                <h5 class="fw-bold mb-0" style="color: #77c040;">Historial de Ventas</h5>
+
+            <a href="?" class="text-decoration-none font-monospace text-light">
+                <i class="fas fa-arrow-left me-1"></i> Volver
+            </a>
+        </div>
+
+        <div class="card-body px-4">
+                <p>Total ventas: {{ $ventas->count() }}</p>
+
+                <table class="table table-dark table-hover text-white">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Cliente</th>
+                        <th>Fecha</th>
+                        <th>Total</th>
+                        <th>Productos</th>
+                    </tr>
+                </thead>
+
+            <tbody>
+                @foreach($ventas as $venta)
+                    <tr>
+                        <td>{{ $venta->id }}</td>
+                        <td>{{ $venta->usuario->nombre }}</td>
+                        <td>{{ $venta->fecha_venta }}</td>
+                        <td>${{ $venta->total }}</td>
+                        <td>
+                            <ul class="mb-0">
+                                @foreach($venta->venta_detalles as $detalle)
+                                    <li>{{ $detalle->producto->nombre }} - Cantidad: {{ $detalle->cantidad }}</li>
+                                @endforeach
+                            </ul>
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+        {{-- Boton para ADMINISTRAR EL INVENTARIO --}}
+        @elseif(request()->has('inventario'))
+            <div class="card h-100 text-white"
+                style="background-color: rgba(10, 10, 10, 0.4); border: 1px solid rgba(255,255,255,0.1);">
+
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5>Administrar Inventario</h5>
+
+                    <a href="?" class="text-decoration-none font-monospace text-light">
+                        <i class="fas fa-arrow-left me-1"></i> Volver
+                    </a>
+            </div>
+
+            <div class="card-body">
+                    <table class="table table-dark table-hover text-white"
+                        style="--bs-table-bg: transparent;">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Producto</th>
+                        <th>Categoría</th>
+                        <th>Stock</th>
+                        <th>Precio</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach($productos as $producto)
+                        <tr>
+                            <td>{{ $producto->id }}</td>
+                            <td>{{ $producto->nombre }}</td>
+                            <td>{{ $producto->categoria->nombre }}</td>
+                            <td>{{ $producto->stock }}</td>
+                            <td>${{ $producto->precio }}</td>
+
+                            <td>
+                                @if($producto->stock > 0)
+                                    <span class="badge bg-success">Disponible</span>
+                                @else
+                                    <span class="badge bg-danger">Sin stock</span>
+                                @endif
+                            </td>
+
+                            <td>
+                                <a href="?editar={{ $producto->id }}"
+                                   class="btn btn-warning btn-sm">
+                                   Editar
+                                </a>
+
+                                <form action="{{ route('admin.producto.eliminar', $producto->id) }}"
+                                      method="POST"
+                                      class="d-inline">
+                                    @csrf
+                                   @method('DELETE')
+
+                                   <button class="btn btn-danger btn-sm">
+                                        Eliminar
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+        {{-- FORMULARIO DE EDICIÓN DE PRODUCTO --}}
+                @elseif(request()->has('editar') && $productoEditar)
+                    <div class="card h-100 text-white" style="background-color: rgba(10, 10, 10, 0.4); border: 1px solid rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);">
+                        <div class="card-header border-0 bg-transparent d-flex justify-content-between align-items-center pt-4 px-4">
+                        <h5 class="fw-bold mb-0" style="color: #77c040;">Editar Producto: {{ $productoEditar->nombre }}</h5>
+                    <a href="?inventario=1" class="text-decoration-none font-monospace text-light" style="font-size: 0.85rem;"><i class="fas fa-arrow-left me-1"></i> Cancelar y volver</a>
+                    </div>
+                    <div class="card-body px-4">
+                        <form action="{{ route('admin.producto.update', $productoEditar->id) }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    @method('PUT')
+                
+                <div class="mb-3">
+                    <label class="form-label text-light font-monospace" style="font-size: 0.8rem;">NOMBRE DEL PRODUCTO</label>
+                    <input type="text" name="nombre" value="{{ $productoEditar->nombre }}" class="form-control text-white" style="background-color: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label text-light font-monospace" style="font-size: 0.8rem;">DESCRIPCIÓN</label>
+                    <textarea name="descripcion" class="form-control text-white" rows="2" style="background-color: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">{{ $productoEditar->descripcion }}</textarea>
+                </div>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label text-light font-monospace" style="font-size: 0.8rem;">PRECIO ($)</label>
+                        <input type="number" name="precio" value="{{ $productoEditar->precio }}" step="0.01" class="form-control text-white" style="background-color: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-light font-monospace" style="font-size: 0.8rem;">CANTIDAD EN STOCK</label>
+                        <input type="number" name="stock" value="{{ $productoEditar->stock }}" class="form-control text-white" style="background-color: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);" required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label text-light font-monospace" style="font-size: 0.8rem;">CATEGORÍA</label>
+                    <select name="categoria_id" class="form-select text-white" style="background-color: rgba(20, 20, 20, 0.9); border: 1px solid rgba(255, 255, 255, 0.1);" required>
+                        @foreach($categorias as $categoria)
+                            <option value="{{ $categoria->id }}" {{ $productoEditar->categoria_id == $categoria->id ? 'selected' : '' }} style="background-color: #111;">
+                                {{ $categoria->nombre }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label text-light font-monospace" style="font-size: 0.8rem;">IMAGEN DEL PRODUCTO (Opcional)</label>
+                    <input type="file" name="url_imagen" class="form-control text-white" style="background-color: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
+                </div>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button type="submit" class="btn fw-bold text-white px-4" style="background-color: #77c040; box-shadow: 0 0 10px rgba(119, 192, 64, 0.3);">
+                        <i class="fas fa-save me-2"></i>Guardar Cambios
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    
+        {{-- Boton para los productos --}}
             @else
         <div class="col-lg-8">
             <div class="card h-100 text-white" style="background-color: rgba(10, 10, 10, 0.4); border: 1px solid rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);">

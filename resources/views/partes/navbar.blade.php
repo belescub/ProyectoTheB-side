@@ -50,29 +50,33 @@
                     <a class="nav-link nav-custom-link" href="/">Inicio</a>
                 </li>
                 <li class="nav-item dropdown">
-    <a class="nav-link dropdown-toggle nav-custom-link" href="#" role="button" data-bs-toggle="dropdown">
-        Productos
-    </a>
-    <ul class="dropdown-menu">
-        <li>
-            <a class="dropdown-item" href="/productos/todos">Ver todos los productos</a>
-        </li>
+                    <a class="nav-link dropdown-toggle nav-custom-link" href="#" role="button" data-bs-toggle="dropdown">
+                        Productos
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item" href="/productos/todos">Ver todos los productos</a>
+                        </li>
         
-        <li><hr class="dropdown-divider"></li>
+                        <li><hr class="dropdown-divider"></li>
 
-        @foreach(\App\Models\Categoria::all() as $categoria)
-            <li>
-                <a class="dropdown-item" href="/productos/{{ strtolower($categoria->nombre) }}">
-                    {{ $categoria->nombre }}
-                </a>
-            </li>
-        @endforeach
-    </ul>
-</li>
+                        @foreach(\App\Models\Categoria::all() as $categoria)
+                        <li>
+                            <a class="dropdown-item" href="/productos/{{ strtolower($categoria->nombre) }}">
+                                {{ $categoria->nombre }}
+                            </a>
+                        </li>
+                        @endforeach
+                    </ul>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link nav-custom-link" href="/contacto">Contacto</a>
                 </li>
 
+                <li class="nav-item">
+                    <a class="nav-link nav-custom-link" href="/quienessomos">Quiénes somos</a>
+                </li>
+                
                 <li class="nav-item">
                     <a class="nav-link nav-custom-link" href="/carrito">
                         <i class="bi bi-cart-dash-fill"></i>
