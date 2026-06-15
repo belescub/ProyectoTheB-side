@@ -11,6 +11,8 @@ use App\Http\Controllers\CarritoController;
 use App\Http\Controllers\UsuarioController; 
 use App\Http\Controllers\ProductoController; 
 use App\Http\Controllers\AdminConsultaController;
+use App\Http\Controllers\CompraController;
+use App\Http\Controllers\FacturaController;
 use App\Models\Producto;
 
 
@@ -112,4 +114,5 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/cliente/consultas', [ContactoController::class, 'misConsultas'])->name('cliente.consultas');
     Route::get('/cliente/compras', [CompraController::class, 'historial'])->name('compras.historial');
     Route::get('/cliente/facturas', [FacturaController::class, 'index'])->name('facturas.index');
+    Route::get('/cliente/facturas/{id}', [FacturaController::class, 'show'])->name('facturas.show');
 });

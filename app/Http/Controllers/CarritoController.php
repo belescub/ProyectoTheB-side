@@ -55,7 +55,11 @@ public function agregar(Request $request, Producto $producto)
 
     // 4. ¡EL FILTRO DE SEGURIDAD! Comparamos contra el stock real
     if ($cantidadTotalProyectada > $producto->stock) {
-        return redirect()->back()->with('error', '¡Ups! Lo sentimos pero no contamos con esa cantidad en stock.');
+       return redirect()->back()->with([
+    'error' => '¡Ups! Lo sentimos pero no contamos con esa cantidad en stock.',
+    'swal_title' => '¡Sin stock!',
+    'swal_icon' => 'info' 
+]);
     }
 
     // 5. Si pasó el filtro, guardamos o actualizamos normal
@@ -106,6 +110,14 @@ public function eliminar($id)
 public function confirmar()
 {
     $carrito = $this->obtenerCarrito();
+
+    if ($carrito->total <= 0) {
+        return redirect()->back()->with([
+            'error' => 'Debe cargar al menos un producto al carrito para finalizar la compra.',
+            'swal_title' => '¡Carrito Vacío!',
+            'swal_icon' => 'warning' // Da un signo de exclamación amarillo
+        ]);
+    }
 
     $carrito->update([
         'estado' => 'confirmado',

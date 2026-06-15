@@ -19,16 +19,29 @@
         @include('partes.footer')
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        @if(session('success'))
+        <script>
+            Swal.fire({
+                title: "{{ session('swal_title', '¡Perfecto!') }}", 
+                text: "{{ session('success') }}",
+                icon: "{{ session('swal_icon', 'success') }}", 
+                confirmButtonColor: '#77c040', 
+                confirmButtonText: 'Aceptar'
+            });
+        </script>
+    @endif
 
-        @if(session('error'))
-            <script>
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Acceso denegado',
-                    text: '{{ session('error') }}',
-                    confirmButtonText: 'Aceptar'
-                });
-            </script>
-        @endif
+    @if(session('error'))
+        <script>
+            Swal.fire({
+                title: "{{ session('swal_title', '¡Aviso!') }}", 
+                text: "{{ session('error') }}",
+                icon: "{{ session('swal_icon', 'warning') }}", 
+                confirmButtonColor: '#77c040', 
+                confirmButtonText: 'Aceptar'
+            });
+        </script>
+    @endif
+    @stack('scripts')
     </body>
 </html>

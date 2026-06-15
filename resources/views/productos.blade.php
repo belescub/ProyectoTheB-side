@@ -1,19 +1,11 @@
 @extends('plantilla')
 @section('contenido')
 
-@if(session('error'))
-    <div class="alert alert-danger alert-dismissible fade show" role="alert" style="background-color: rgba(220, 53, 69, 0.8); color: white; border: none;">
-        {{ session('error') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
+{{-- El título del buscador solo se muestra si hay una consulta activa --}}
+@if(isset($query))
+    <h3 class="text-white mb-4" style="color: #77c040;">Resultados para: "{{ $query }}"</h3>
 @endif
 
-@if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show" role="alert" style="background-color: rgba(119, 192, 64, 0.8); color: white; border: none;">
-        {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-@endif
 <div class="row catalogo-row">
     @forelse($productos as $producto)
         @if(isset($query))
