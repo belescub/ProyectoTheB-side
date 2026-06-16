@@ -66,8 +66,8 @@ class Venta_cabeceraController extends Controller
         }
 
         // 4. Actualizamos el total real de la venta
-        $venta->total = $totalVenta;
-        $venta->save();
+        $venta_cabecera->total = $totalVenta;
+        $venta_cabecera->save();
 
         return redirect()->route('venta_cabeceras.index')->with('success', '¡Venta registrada con éxito!');
     }

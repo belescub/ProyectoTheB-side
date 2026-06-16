@@ -7,6 +7,7 @@ use App\Models\Usuario;
 use App\Models\Categoria;
 use App\Models\Producto;
 use App\Models\Venta_cabecera; 
+use Carbon\Carbon;
 
 class AdminController extends Controller
 {
@@ -26,10 +27,60 @@ class AdminController extends Controller
 
         $usuarios = Usuario::withTrashed()->get();
 
-        $ventas = Venta_cabecera::with(['venta_detalles.producto', 'usuario'])
-            ->latest()
-            ->get();
-        
+        $queryVentas = Venta_cabecera::with(['venta_detalles.producto', 'usuario'])->latest();
+
+        // Si estamos en la pestaña de ventas, aplicamos los filtros
+        if (request()->has('ventas')) {
+            $buscar = request('buscar');
+            $criterio = request('criterio');
+            $fecha = request('fecha');
+
+            // 1. FILTRO DE TEXTO (Por Producto o Cliente)
+            if (!empty($buscar)) {
+                if ($criterio == 'cliente') {
+                    // Buscamos dentro de la tabla de usuarios relacionados
+                    $queryVentas->whereHas('usuario', function($q) use ($buscar) {
+                        $q->where('nombre', 'LIKE', '%' . $buscar . '%');
+                    });
+                } elseif ($criterio == 'producto') {
+                    // Buscamos en el nombre del producto, en su descripción o en su categoría
+                    $queryVentas->whereHas('venta_detalles.producto', function($q) use ($buscar) {
+                        $q->where('nombre', 'LIKE', '%' . $buscar . '%')
+                          ->orWhere('descripcion', 'LIKE', '%' . $buscar . '%')
+                          ->orWhereHas('categoria', function($catQuery) use ($buscar) {
+                              $catQuery->where('nombre', 'LIKE', '%' . $buscar . '%');
+                          });
+                    });
+                }
+            }
+
+            // 2. FILTRO DE FECHAS
+            if (!empty($fecha) && $fecha != 'todas') {
+                switch ($fecha) {
+                    case 'hoy':
+                        $queryVentas->whereDate('fecha_venta', Carbon::today());
+                        break;
+                    case 'semana':
+                        $queryVentas->whereBetween('fecha_venta', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()]);
+                        break;
+                    case 'mes':
+                        // Ventas de los últimos 30 días
+                        $queryVentas->where('fecha_venta', '>=', Carbon::now()->subMonth());
+                        break;
+                    case 'anio':
+                        // Ventas del último año
+                        $queryVentas->where('fecha_venta', '>=', Carbon::now()->subYear());
+                        break;
+                    case 'mas_anio':
+                        // Ventas anteriores a un año
+                        $queryVentas->where('fecha_venta', '<', Carbon::now()->subYear());
+                        break;
+                }
+            }
+        }
+
+        // Finalmente, ejecutamos la consulta y traemos los resultados
+        $ventas = $queryVentas->get();
         // --- PARA EL MODO EDICION ---
         $productoEditar = null;
         if (request()->has('editar')) {
