@@ -543,23 +543,3 @@ body, p, label, .search-input, .form-control, .catalog-title {
         padding: 5px;
     }   
 }
-/* Ajustes responsivos para el Panel de Administración */
-@media (max-width: 768px) {
-    /* Reduce el padding lateral de las tarjetas principales en celular */
-    .card-body.px-4, 
-    .card-header.px-4 {
-        padding-left: 1rem !important;
-        padding-right: 1rem !important;
-    }
-
-    /* Ajusta el tamaño de la fuente del título principal */
-    h1.fw-bold {
-        font-size: 1.75rem;
-    }
-
-    /* Fuerza que los botones de acciones rápidas no se desborden de su caja */
-    .btn.d-flex.align-items-center.justify-content-between {
-        flex-wrap: wrap;
-        gap: 0.5rem;
-    }
-}
