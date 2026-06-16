@@ -13,6 +13,7 @@ use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\AdminConsultaController;
 use App\Http\Controllers\CompraController;
 use App\Http\Controllers\FacturaController;
+use App\Http\Controllers\CheckoutController;
 use App\Models\Producto;
 
 
@@ -62,7 +63,7 @@ Route::get('/productos/{categoria?}', function ($categoria = 'todos') {
     }
 
     return view('productos', compact('productos', 'categoria'));
-});
+})->name('productos');
 
 
 
@@ -116,3 +117,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/cliente/facturas', [FacturaController::class, 'index'])->name('facturas.index');
     Route::get('/cliente/facturas/{id}', [FacturaController::class, 'show'])->name('facturas.show');
 });
+
+// Mostrar la vista del checkout
+Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+
+// Procesar la compra
+Route::post('/checkout/process', [CheckoutController::class, 'process'])->name('checkout.process');

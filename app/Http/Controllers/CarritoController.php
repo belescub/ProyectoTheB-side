@@ -107,28 +107,17 @@ public function eliminar($id)
 
     return back();
 }
-public function confirmar()
-{
+public function confirmar(){
     $carrito = $this->obtenerCarrito();
 
     if ($carrito->total <= 0) {
         return redirect()->back()->with([
             'error' => 'Debe cargar al menos un producto al carrito para finalizar la compra.',
             'swal_title' => '¡Carrito Vacío!',
-            'swal_icon' => 'warning' // Da un signo de exclamación amarillo
+            'swal_icon' => 'warning'
         ]);
     }
 
-    $carrito->update([
-        'estado' => 'confirmado',
-        'fecha_venta' => now()
-    ]);
-
-    session([
-        'total' => $carrito->total
-    ]);
-
-    return redirect()
-        ->route('compra.confirmada');
+    return redirect()->route('checkout.index');
 }
 }

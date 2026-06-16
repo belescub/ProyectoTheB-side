@@ -18,6 +18,14 @@ class Venta_cabecera extends Model
         'fecha_venta',
         'estado',
         'usuario_id',
+        'telefono',
+        'direccion',
+        'provincia',
+        'localidad',
+        'codigo_postal',
+        'metodo_pago',
+        'metodo_entrega',
+        'costo_envio',
     ];
 
     /**

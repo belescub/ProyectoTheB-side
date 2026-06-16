@@ -27,6 +27,16 @@ return new class extends Migration
             // Guarda el estado del ticket/pedido (ej: pendiente, pagado, despachado). 
             // Por defecto arranca en 'pendiente' apenas se crea la venta.
             $table->string('estado')->default('pendiente');
+
+            //Campos del checkout , que se llenan al momento de procesar la compra
+            $table->string('telefono')->nullable();
+            $table->string('direccion')->nullable();
+            $table->string('provincia')->nullable();
+            $table->string('localidad')->nullable();
+            $table->string('codigo_postal')->nullable();
+            $table->string('metodo_pago')->nullable();
+            $table->string('metodo_entrega')->nullable();
+            $table->decimal('costo_envio', 10, 2)->default(0);
             
             // Clave foránea que relaciona este ticket con el cliente.
             // Le dice a Laravel: "El usuario_id de acá debe existir sí o sí en la tabla 'usuarios'".
