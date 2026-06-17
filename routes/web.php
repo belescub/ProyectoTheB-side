@@ -48,13 +48,11 @@ Route::post('/login', [LoginController::class, 'procesar']);
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout'); // Cierra sesión, solo para usuarios autenticados
 
-Route::get('/registro', [AuthController::class, 'formularioRegistro']) ->name('registro');
-Route::post('/registro', [AuthController::class, 'registrar']);
+Route::get('/registro', [AuthController::class, 'formularioRegistro'])->name('registro');
 Route::post('/registro', [RegistroController::class, 'procesar']);
 
-Route::get('/cliente', [ClienteController::class, 'index']);
-
-Route::get('/admin', [AdminController::class, 'index']);
+//Route::get('/cliente', [ClienteController::class, 'index']);
+//Route::get('/admin', [AdminController::class, 'index']);
 Route::post('/admin/productos', [AdminController::class, 'store'])->name('admin.productos.store');
 
 Route::get('/productos/{categoria?}', function ($categoria = 'todos') {

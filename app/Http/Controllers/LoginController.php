@@ -11,18 +11,29 @@ class LoginController extends Controller
     {
         // 1. Tomamos las credenciales del formulario
         $credenciales = $request->only('email', 'password');
+
         // 2. Intentamos autenticar al usuario
         if (Auth::attempt($credenciales)) {
-            // 3. Si la autenticación es exitosa, redirigimos a la página de éxito
+            // Regenerar la sesión por seguridad
             $request->session()->regenerate();
-        return view('exito-login', [
-            'email' => $request->input('email')
-        ]);
-    }
-        // 4. Si la autenticación falla, redirigimos de vuelta al formulario con un mensaje de error
+
+            // 3. Obtenemos al usuario que acaba de iniciar sesión
+            $usuario = Auth::user();
+
+            // 4. Redirigimos según su rol
+            if ($usuario->rol_id == 1) { 
+                // Si es Administrador, lo enviamos al dashboard
+                return redirect('admin'); 
+            } else {
+                // Si es Cliente (o cualquier otro rol), lo enviamos a la página principal
+                return redirect('/'); 
+            }
+        }
+
+        // 5. Si la autenticación falla, regresamos con error
         return back()->withErrors([
             'login_error' => 'El correo o la contraseña son incorrectos.',
-        ])->withInput();
+        ])->withInput($request->only('email')); // Mantenemos solo el correo para que no lo vuelva a escribir
     }
 }
 

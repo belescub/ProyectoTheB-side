@@ -25,14 +25,6 @@ class UsuarioController extends Controller{
                 'email'    => 'required|email|unique:usuarios',
                 'password' => 'required|min:8|confirmed', // busca campo password_confirmation
                 'rol_id'   => 'required|exists:roles,id',
-            ], [
-                'nombre.required'    => 'Debe completar este campo.',
-                'email.required'     => 'Debe completar este campo.',
-                'email.email'        => 'Por favor, ingresa un correo electrónico válido.',
-                'email.unique'       => 'Ya existe una cuenta con este correo.',
-                'password.required'  => 'Debe completar este campo.',
-                'password.min'       => 'La contraseña debe contar al menos con :min caracteres.',
-                'password.confirmed' => 'Las contraseñas no coinciden.',
             ]);
 
 
