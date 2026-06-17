@@ -224,7 +224,7 @@
                             <div class="row g-2 align-items-end mb-3">
                                 <div class="col-12 col-md-4">
                                     <label class="form-label text-light font-monospace" style="font-size: 0.75rem;">BÚSQUEDA</label>
-                                    <input type="text" name="buscar" value="{{ request('buscar') }}" class="form-control text-white" style="background-color: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);" placeholder="Ej: Taylor Swift, CD, Sabrina...">
+                                    <input type="text" name="buscar" value="{{ request('buscar') }}" class="form-control text-white" style="background-color: rgba(255, 255, 255, 0.86); border: 1px solid rgba(255,255,255,0.1);" placeholder="Ej: Taylor Swift, CD, Sabrina...">
                                 </div>
                                 <div class="col-12 col-md-3">
                                     <label class="form-label text-light font-monospace" style="font-size: 0.75rem;">FILTRAR POR</label>

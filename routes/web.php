@@ -42,6 +42,24 @@ Route::post('/registro', [RegistroController::class, 'procesar']);
 // --- Catálogo y Buscador ---
 Route::get('/buscar', [ProductoController::class, 'buscar'])->name('productos.buscar');
 
+Route::get('/quienessomos', function () {
+    return view('quienes-somos'); 
+});
+
+/** Rutas de autenticación */
+Route::get('/login', [AuthController::class, 'formularioLogin'])->name('login');
+Route::post('/login', [AuthController::class, 'autenticar']);
+
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+Route::get('/registro', [AuthController::class, 'formularioRegistro'])->name('registro');
+Route::post('/registro', [AuthController::class, 'registrar']);
+
+Route::get('/cliente', [ClienteController::class, 'index']);
+Route::get('/admin', [AdminController::class, 'index']);
+
+Route::post('/admin/productos', [AdminController::class, 'store'])->name('admin.productos.store');
+
 Route::get('/productos/{categoria?}', function ($categoria = 'todos') {
     if ($categoria === 'todos') {
     
