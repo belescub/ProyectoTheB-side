@@ -16,9 +16,13 @@ use App\Http\Controllers\FacturaController;
 use App\Http\Controllers\CheckoutController;
 use App\Models\Producto;
 
-
+//pagina principal
 Route::get('/', function () {
-    return view('TheB-Side'); //pagina princial
+    // Mezcla los productos de la BD y agarra 3 al azar
+    $productosRandom = Producto::inRandomOrder()->take(3)->get();
+    
+    // Le pasamos los productos a la vista usando compact
+    return view('TheB-Side', compact('productosRandom')); // Cambiá 'welcome' por el nombre real de tu vista si es otro
 });
 
 Route::get('/contacto', function () {
@@ -123,3 +127,11 @@ Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.in
 
 // Procesar la compra
 Route::post('/checkout/process', [CheckoutController::class, 'process'])->name('checkout.process');
+
+//Todas rutas primero tienen que pasar por estos middlewares
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/admin', [AdminController::class, 'index']);
+    Route::post('/admin/store', [AdminController::class, 'store']);
+    Route::delete('/admin/usuario/{id}', [AdminController::class, 'darBaja']);
+    Route::put('/admin/hacer-admin/{id}', [AdminController::class, 'hacerAdmin']);
+});

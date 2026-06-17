@@ -46,7 +46,8 @@ class ProductoController extends Controller
             'nombre'   => 'required|string|max:255',
             'precio'   => 'required|numeric|min:0',
             'stock'    => 'required|integer|min:0',
-            'categoria_id' => 'required|exists:categorias,id' //verifica que la categoria exista
+            'categoria_id' => 'required|exists:categorias,id', //verifica que la categoria exista
+            'url_imagen'   => 'nullable|string|max:255', //deja pasar la imagen, o sea que la acepte
         ]);
         //Guardamos el producto mágicamente usando Mass Assignment ($fillable)
         Producto::create($request->all());
@@ -87,7 +88,8 @@ class ProductoController extends Controller
             'nombre'       => 'required|string|max:255',
             'precio'       => 'required|numeric|min:0',
             'stock'        => 'required|integer|min:0',
-            'categoria_id' => 'required|exists:categorias,id'
+            'categoria_id' => 'required|exists:categorias,id', 
+            'url_imagen'   => 'nullable|string|max:255',
         ]);
 
         // Actualizamos el registro existente
@@ -117,7 +119,6 @@ public function buscar(Request $request){
                          ->orWhere('descripcion', 'LIKE', "%{$query}%")
                          ->get();
 
-    // ¡ACÁ ESTÁ LA CORRECCIÓN! 
     // Como productos.blade.php está en la raíz de views, solo ponemos 'productos'
     return view('productos', compact('productos', 'query'));
 }

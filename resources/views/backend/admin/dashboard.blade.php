@@ -253,7 +253,6 @@
 
                         <p>Total ventas: {{ $ventas->count() }}</p>
 
-                        {{-- 5. ACÁ ESTABA EL ERROR: Agregado div.table-responsive --}}
                         <div class="table-responsive">
                             <table class="table table-dark table-hover text-white">
                                 <thead>

@@ -144,12 +144,17 @@ public function store(Request $request)
     }
 
     public function darBaja($id){
-        $usuario = Usuario::findOrFail($id);
+    $usuario = Usuario::findOrFail($id);
 
-        $usuario->delete(); // llena deleted_at
-
-        return redirect()->back()->with('success', 'Usuario dado de baja');
+    // evitar que el admin se elimine a sí mismo
+    if(auth()->id() == $usuario->id){
+        return redirect()->back()->with('error', 'No puedes darte de baja a ti mismo');
     }
+
+    $usuario->delete(); // llena deleted_at
+
+    return redirect()->back()->with('success', 'Usuario dado de baja');
+}
 
     public function hacerAdmin($id){
         $usuario = Usuario::findOrFail($id);
