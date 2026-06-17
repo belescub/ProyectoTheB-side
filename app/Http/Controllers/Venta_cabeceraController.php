@@ -51,7 +51,6 @@ class Venta_cabeceraController extends Controller
             $subtotal = $producto->precio * $cantidad;
             $totalVenta += $subtotal;
 
-            // ¡CREAMOS EL RENGLÓN (Venta_detalle)!
             Venta_detalle::create([
                 'venta_cabecera_id' => $venta_cabecera->id, // Lo conectamos al ticket recién creado
                 'producto_id' => $producto->id,
@@ -60,7 +59,7 @@ class Venta_cabeceraController extends Controller
                 'subtotal' => $subtotal
             ]);
 
-            // EXTRA (Opcional pero recomendado): Restar el stock del producto
+            // Restar el stock del producto
             $producto->stock = $producto->stock - $cantidad;
             $producto->save();
         }

@@ -117,7 +117,7 @@ public function store(Request $request)
 
         $data = $request->all();
 
-        // 2. LA MAGIA DE LA NUEVA CATEGORÍA
+        // 2. NUEVA CATEGORÍA
         if ($request->categoria_id === 'nueva') {
             // Creamos la categoría primero
             $nuevaCategoria = Categoria::create([

@@ -18,8 +18,13 @@ class ProductoController extends Controller
          * Se trae todos los productos
          * Se usa with('categoria') para evitar el problema de N+1 
          * Esto hace que la consulta sea rapida
+         * Se trae solo los productos que tengan stock mayor a 0.
+         * Lo que tenga 0 o menos, simplemente no se envía a la vista.
          */
-        $productos = Producto::with('categoria')->get();
+        $productos = Producto::with('categoria')
+                             ->where('stock', '>', 0)
+                             ->get();
+
         return view('productos.index', compact('productos'));
     }
 
@@ -114,11 +119,13 @@ public function buscar(Request $request){
     // Capturamos lo que el usuario ingresó en el input name="q"
     $query = $request->input('q');
 
-    // Buscamos en el modelo Producto coincidencias
-    $productos = Producto::where('nombre', 'LIKE', "%{$query}%")
-                         ->orWhere('descripcion', 'LIKE', "%{$query}%")
-                         ->get();
-
+    // Buscamos en el modelo Producto coincidencias asegurando que obligatoriamente el stock sea mayor a 0
+        $productos = Producto::where('stock', '>', 0)
+                             ->where(function($q) use ($query) {
+                                 $q->where('nombre', 'LIKE', "%{$query}%")
+                                   ->orWhere('descripcion', 'LIKE', "%{$query}%");
+                             })
+                             ->get();
     // Como productos.blade.php está en la raíz de views, solo ponemos 'productos'
     return view('productos', compact('productos', 'query'));
 }

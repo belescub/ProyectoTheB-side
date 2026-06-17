@@ -20,6 +20,11 @@
                     <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
                     <input type="password" name="password" class="form-control" placeholder="Contraseña" required>
                 </div>
+                @error('login_error')
+                    <div class="text-danger mt-1" style="font-size: 0.85rem;">
+                        {{ $message }}
+                    </div>
+                @enderror
             </div>
             
             <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-4 gap-2" style="font-size: 0.9rem;">

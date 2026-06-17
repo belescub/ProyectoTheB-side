@@ -44,11 +44,13 @@ Route::get('/quienessomos', function () {
 /** Rutas de autenticación */
 Route::get('/login', [AuthController::class, 'formularioLogin']) ->name('login');
 Route::post('/login', [AuthController::class, 'autenticar']);
+Route::post('/login', [LoginController::class, 'procesar']);
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout'); // Cierra sesión, solo para usuarios autenticados
 
 Route::get('/registro', [AuthController::class, 'formularioRegistro']) ->name('registro');
 Route::post('/registro', [AuthController::class, 'registrar']);
+Route::post('/registro', [RegistroController::class, 'procesar']);
 
 Route::get('/cliente', [ClienteController::class, 'index']);
 
@@ -68,8 +70,6 @@ Route::get('/productos/{categoria?}', function ($categoria = 'todos') {
 
     return view('productos', compact('productos', 'categoria'));
 })->name('productos');
-
-
 
 Route::middleware('auth')->group(function () {
 

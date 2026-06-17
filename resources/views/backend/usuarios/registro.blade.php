@@ -12,6 +12,9 @@
                     <span class="input-group-text"><i class="fa-solid fa-user"></i></span>
                     <input type="text" name="nombre" class="form-control" placeholder="Tu nombre completo" required>
                 </div>
+                @error('nombre')
+                    <div class="text-danger mt-1" style="font-size: 0.85rem;">{{ $message }}</div>
+                @enderror
             </div>
             
             <div class="mb-3">
@@ -20,6 +23,9 @@
                     <span class="input-group-text"><i class="fa-solid fa-envelope"></i></span>
                     <input type="email" name="email" class="form-control" placeholder="ejemplo@gmail.com" required>
                 </div>
+                @error('email')
+                    <div class="text-danger mt-1" style="font-size: 0.85rem;">{{ $message }}</div>
+                @enderror
             </div>
             
             <div class="mb-3">
@@ -28,6 +34,9 @@
                     <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
                     <input type="password" name="password" class="form-control" placeholder="Contraseña" required>
                 </div>
+                @error('password')
+                    <div class="text-danger mt-1" style="font-size: 0.85rem;">{{ $message }}</div>
+                @enderror
             </div>
             
             <div class="mb-4">
@@ -36,6 +45,9 @@
                     <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
                     <input type="password" name="password_confirmation" class="form-control" placeholder="Confirma tu contraseña" required>
                 </div>
+                @error('password_confirmation')
+                    <div class="text-danger mt-1" style="font-size: 0.85rem;">{{ $message }}</div>
+                @enderror
             </div>
             
             <button type="submit" class="btn w-100 py-2">Registrarse</button>
