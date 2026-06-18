@@ -67,28 +67,21 @@
 @foreach($productosRandom as $producto)
 <div class="col">
     <div class="catalog-item">
-        
-        {{-- INICIO DE LA IMAGEN INTELIGENTE --}}
-        @php
-            $rutaEnAssets = public_path('assets/img/' . $producto->url_imagen);
-        @endphp
 
-        @if($producto->url_imagen && file_exists($rutaEnAssets))
-            <img src="{{ asset('assets/img/' . $producto->url_imagen) }}" class="card-img-fluid catalog-img" alt="{{ $producto->nombre }}">
-        @else
-            <img src="{{ asset('storage/' . $producto->url_imagen) }}" class="card-img-fluid catalog-img" alt="{{ $producto->nombre }}">
-        @endif
-        {{-- FIN DE LA IMAGEN INTELIGENTE --}}
+        <img src="{{ asset('storage/' . trim($producto->url_imagen)) }}"
+             class="catalog-img"
+             alt="{{ $producto->nombre }}">
+             
 
         <div class="catalog-info mt-2">
-            <h5 class="card-title">{{ $producto->nombre }}</h5>
-            
-            <p class="product-price mb-1">${{ number_format($producto->precio, 0, ',', '.') }}</p>
-            
-            <a href="/carrito" class="catalog-cart-icon">
+            <h5>{{ $producto->nombre }}</h5>
+            <p>${{ number_format($producto->precio, 0, ',', '.') }}</p>
+
+            <a href="/carrito">
                 <i class="bi bi-cart-dash-fill"></i>
             </a>
         </div>
+
     </div>
 </div>
 @endforeach
