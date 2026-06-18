@@ -64,23 +64,34 @@
 <div class="container my-5 pt-3"> 
     <div class="row catalogo-row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4">
         
-        @foreach($productosRandom as $producto)
-        <div class="col">
-            <div class="catalog-item">
-                <img src="{{ asset('storage/' . $producto->url_imagen) }}" class="card-img-fluid catalog-img" alt="{{ $producto->nombre }}">
-                
-                <div class="catalog-info mt-2">
-                    <h5 class="card-title">{{ $producto->nombre }}</h5>
-                    
-                    <p class="product-price mb-1">${{ number_format($producto->precio, 0, ',', '.') }}</p>
-                    
-                    <a href="/carrito" class="catalog-cart-icon">
-                        <i class="bi bi-cart-dash-fill"></i>
-                    </a>
-                </div>
-            </div>
+@foreach($productosRandom as $producto)
+<div class="col">
+    <div class="catalog-item">
+        
+        {{-- INICIO DE LA IMAGEN INTELIGENTE --}}
+        @php
+            $rutaEnAssets = public_path('assets/img/' . $producto->url_imagen);
+        @endphp
+
+        @if($producto->url_imagen && file_exists($rutaEnAssets))
+            <img src="{{ asset('assets/img/' . $producto->url_imagen) }}" class="card-img-fluid catalog-img" alt="{{ $producto->nombre }}">
+        @else
+            <img src="{{ asset('storage/' . $producto->url_imagen) }}" class="card-img-fluid catalog-img" alt="{{ $producto->nombre }}">
+        @endif
+        {{-- FIN DE LA IMAGEN INTELIGENTE --}}
+
+        <div class="catalog-info mt-2">
+            <h5 class="card-title">{{ $producto->nombre }}</h5>
+            
+            <p class="product-price mb-1">${{ number_format($producto->precio, 0, ',', '.') }}</p>
+            
+            <a href="/carrito" class="catalog-cart-icon">
+                <i class="bi bi-cart-dash-fill"></i>
+            </a>
         </div>
-        @endforeach
+    </div>
+</div>
+@endforeach
 
     </div>
 </div>
