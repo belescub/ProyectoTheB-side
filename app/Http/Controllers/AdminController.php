@@ -23,7 +23,8 @@ class AdminController extends Controller
         // 1. Necesitamos traer todas las categorías para el select del formulario
         $categorias = Categoria::all(); 
 
-        $productos = Producto::with('categoria')->latest()->take(5)->get();
+        // Esto trae TODO el inventario, pero ordenado por el más reciente primero
+        $productos = Producto::latest()->get();
 
         $usuarios = Usuario::withTrashed()->get();
 

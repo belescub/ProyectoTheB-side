@@ -292,58 +292,50 @@
 
             @elseif(request()->has('inventario'))
                 {{-- ADMINISTRAR INVENTARIO --}}
-                <div class="card h-100 text-white" style="background-color: rgba(10, 10, 10, 0.4); border: 1px solid rgba(255,255,255,0.1);">
-                    <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2 pt-4 px-4">
-                        <h5 class="fw-bold mb-0" style="color: #77c040;">Administrar Inventario</h5>
-                        <a href="?" class="text-decoration-none font-monospace text-light"><i class="fas fa-arrow-left me-1"></i> Volver</a>
-                    </div>
-                    <div class="card-body px-4">
-                        {{-- 6. OTRA TABLA REPARADA --}}
-                        <div class="table-responsive">
-                            <table class="table table-dark table-hover text-white" style="--bs-table-bg: transparent;">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Producto</th>
-                                        <th>Categoría</th>
-                                        <th>Stock</th>
-                                        <th>Precio</th>
-                                        <th>Estado</th>
-                                        <th>Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($productos as $producto)
-                                        <tr>
-                                            <td>{{ $producto->id }}</td>
-                                            <td>{{ $producto->nombre }}</td>
-                                            <td>{{ $producto->categoria->nombre }}</td>
-                                            <td>{{ $producto->stock }}</td>
-                                            <td>${{ $producto->precio }}</td>
-                                            <td>
-                                                @if($producto->stock > 0)
-                                                    <span class="badge bg-success">Disponible</span>
-                                                @else
-                                                    <span class="badge bg-danger">Sin stock</span>
-                                                @endif
-                                            </td>
-                                            <td>
-                                                <a href="?editar={{ $producto->id }}" class="btn btn-warning btn-sm mb-1 mb-md-0">Editar</a>
-                                                <form action="{{ route('admin.producto.eliminar', $producto->id) }}" method="POST" class="d-inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button class="btn btn-danger btn-sm">Eliminar</button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-            @elseif(request()->has('editar') && $productoEditar)
+                <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+    <table class="table table-dark table-hover text-white mb-0" style="--bs-table-bg: transparent;">
+        <thead style="position: sticky; top: 0; background-color: #1a1a1a; z-index: 1;">
+            <tr>
+                <th>ID</th>
+                <th>Producto</th>
+                <th>Categoría</th>
+                <th>Stock</th>
+                <th>Precio</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($productos as $producto)
+                <tr>
+                    <td>{{ $producto->id }}</td>
+                    <td>{{ $producto->nombre }}</td>
+                    <td>{{ $producto->categoria->nombre }}</td>
+                    <td>{{ $producto->stock }}</td>
+                    <td>${{ $producto->precio }}</td>
+                    <td>
+                        @if($producto->stock > 0)
+                            <span class="badge bg-success">Disponible</span>
+                        @else
+                            <span class="badge bg-danger">Sin stock</span>
+                        @endif
+                    </td>
+                    <td>
+                        <a href="?editar={{ $producto->id }}" class="btn btn-warning btn-sm mb-1 mb-md-0">Editar</a>
+                        <form action="{{ route('admin.producto.eliminar', $producto->id) }}" method="POST" class="d-inline">
+                            @csrf
+                            @method('DELETE')
+                            <button class="btn btn-danger btn-sm">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
+</div>
+</div>
+          @elseif(request()->has('editar') && $productoEditar)
                 {{-- EDICIÓN DE PRODUCTO --}}
                 <div class="card h-100 text-white" style="background-color: rgba(10, 10, 10, 0.4); border: 1px solid rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);">
                     <div class="card-header border-0 bg-transparent d-flex flex-wrap justify-content-between align-items-center gap-2 pt-4 px-4">
@@ -415,24 +407,31 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse($productos as $producto)
+                                    @forelse($productos->take(5) as $producto)
                                         <tr style="border-color: rgba(255, 255, 255, 0.05);">
                                             <td class="font-monospace text-white">#{{ $producto->id }}</td>
                                             <td class="fw-semibold text-white">{{ $producto->nombre }}</td>
                                             <td><span class="badge bg-light text-dark">{{ $producto->categoria->nombre ?? 'N/A' }}</span></td>
                                             <td class="text-white fw-bold">${{ number_format($producto->precio, 2) }}</td>
-                                            <td class="text-center">...</td>
-                                        </tr>
+                                            <td class="text-center">
+                                            @if($producto->stock > 0)
+                                                {{-- Insignia verde para mantener el estilo --}}
+                                                <span class="badge bg-success">Disponible</span>
+                                            @else
+                                                {{-- Insignia roja para falta de stock --}}
+                                                <span class="badge bg-danger">Sin stock</span>
+                                             @endif
+                                             </td>
+                                     </tr>
                                     @empty
-                                        <tr><td colspan="5" class="text-center">Sin productos</td></tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                                <tr><td colspan="5" class="text-center text-white">Sin productos</td></tr>
+                            @endforelse
+                        </tbody>
+                    </table>
                 </div>
-            @endif
+            </div>
         </div>
-    </div>
+    @endif
+</div>
 </div>
 @endsection
