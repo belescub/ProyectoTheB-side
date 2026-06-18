@@ -7,12 +7,21 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Rol extends Model {
-     use HasFactory, SoftDeletes;
-    protected $table = 'roles';           // sobreescribe la pluralización en inglés ('rols')
-    protected $fillable = [               // columnas permitidas para asignación masiva
-        'nombre', 'descripcion',
+
+    // Habilita factories y soft delete
+    use HasFactory, SoftDeletes;
+
+    // Nombre real de la tabla en la base de datos
+    protected $table = 'roles';
+
+    // Campos permitidos para asignación masiva
+    protected $fillable = [
+        'nombre',
+        'descripcion',
     ];
-     // Relación: un Rol tiene muchos Usuarios  →  se usa como $rol->usuarios
+
+    // Relación: un rol tiene muchos usuarios
+    // Ejemplo: $rol->usuarios
     public function usuarios() {
         return $this->hasMany(Usuario::class, 'rol_id');
     }

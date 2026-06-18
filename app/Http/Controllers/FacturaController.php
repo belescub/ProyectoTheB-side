@@ -7,24 +7,31 @@ use App\Models\Venta_cabecera;
 
 class FacturaController extends Controller
 {
+    // Muestra todas las facturas del usuario logueado
     public function index(){
+
+        // Traemos solo compras finalizadas
         $facturas = Venta_cabecera::where('usuario_id', auth()->user()->id)
-                                 ->whereNotNull('fecha_venta') // Solo consideramos las compras que ya fueron finalizadas
-                                 ->where('total', '>', 0) // Nos aseguramos de que sean compras reales, no carritos abandonados
-                                 ->orderBy('fecha_venta', 'desc')
+                                 ->whereNotNull('fecha_venta') // Solo compras confirmadas
+                                 ->where('total', '>', 0) // Evita carritos vacíos o abandonados
+                                 ->orderBy('fecha_venta', 'desc') // Ordena de la más nueva a la más vieja
                                  ->get();
 
+        // Retorna la vista con todas las facturas
         return view('backend.usuarios.facturas', compact('facturas'));
     }
 
+    // Muestra el detalle de una factura específica
     public function show($id){
-        // Cargamos la venta con su relación 'venta_detalles' y, a su vez, el 'producto' de cada detalle
-        $compra = Venta_cabecera::with('venta_detalles.producto')
-                                 ->where('usuario_id', auth()->user()->id)
-                                 ->whereNotNull('fecha_venta')
-                                 ->where('total', '>', 0)
-                                 ->findOrFail($id);
 
+        // Cargamos la compra junto con sus detalles y productos relacionados
+        $compra = Venta_cabecera::with('venta_detalles.producto')
+                                 ->where('usuario_id', auth()->user()->id) // Seguridad: solo puede ver sus propias facturas
+                                 ->whereNotNull('fecha_venta') // Solo compras confirmadas
+                                 ->where('total', '>', 0)
+                                 ->findOrFail($id); // Si no existe, tira error 404
+
+        // Retorna la vista del detalle de factura
         return view('backend.usuarios.factura_detalle', compact('compra'));
     }
 }

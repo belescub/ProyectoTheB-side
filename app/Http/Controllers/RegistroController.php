@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 
 class RegistroController extends Controller
 {
+    // Procesa el registro de nuevos usuarios
     public function procesar(Request $request)
     {
         // Agregamos la validación con mensajes personalizados
@@ -15,7 +16,8 @@ class RegistroController extends Controller
             'nombre' => 'required|string|max:255',
             'email' => 'required|email|unique:usuarios,email', 
             'password' => 'required|string|min:8|confirmed',
-        ], [
+        ], [ 
+            // Mensajes personalizados de error
             'nombre.required' => 'El nombre es obligatorio.',
             'email.required' => 'El correo electrónico es obligatorio.',
             'email.email' => 'El correo electrónico debe ser una dirección válida.',
@@ -24,6 +26,7 @@ class RegistroController extends Controller
             'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
             'password.confirmed' => 'Las contraseñas no coinciden.',
         ]);
+         // Crear nuevo usuario en la base de datos
         Usuario::create([
             'nombre' => $request->input('nombre'),
             'email' => $request->input('email'),
@@ -32,7 +35,7 @@ class RegistroController extends Controller
             // Asignamos un rol por defecto para los clientes nuevos (ej: 2)
             'rol_id' => 2 
         ]);
-
+        // Redirige a login con datos precargados
         return view('backend.usuarios.login', [
             'nombre' => $request->input('nombre'),
             'email' => $request->input('email')

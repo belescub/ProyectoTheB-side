@@ -9,12 +9,13 @@ use App\Models\Producto;
 
 class CarritoController extends Controller
 {
+    // Muestra el carrito actual
 public function index()
 {
     if (
-        auth()->check() &&
-        auth()->user()->rol &&
-        strtolower(auth()->user()->rol->nombre) === 'admin'
+        auth()->check() && // Bloquea acceso a administradores
+        auth()->user()->rol &&// Obtiene carrito
+        strtolower(auth()->user()->rol->nombre) === 'admin' // Trae productos cargados
     ) {
         return redirect('/')
             ->with('error', 'Los administradores no tienen acceso al carrito.');
@@ -28,8 +29,11 @@ public function index()
 
     return view('backend.usuarios.carrito', compact('items', 'carrito'));
 }
+ // Obtiene o crea carrito
     private function obtenerCarrito() 
     {
+         // Busca carrito en estado "carrito"
+        // Si no existe, lo crea
         return Venta_cabecera::firstOrCreate(['usuario_id' => auth()->id(),'estado' => 'carrito'],['total' => 0, 'fecha_venta' => now()]);
     }
 public function agregar(Request $request, Producto $producto)
@@ -81,8 +85,9 @@ public function agregar(Request $request, Producto $producto)
     
     return redirect()->back()->with('success', '¡Producto agregado al carrito con éxito!');
 }
-    private function recalcularTotal($carrito)
-{
+    private function recalcularTotal($carrito){
+         // Suma subtotales de todos los items
+        // Actualiza total
     $total = Venta_detalle::where(
         'venta_cabecera_id',
         $carrito->id
@@ -94,6 +99,8 @@ public function agregar(Request $request, Producto $producto)
 }
 public function eliminar($id)
 {
+    // Busca item y elimina
+    // Recalcula total
     $carrito = $this->obtenerCarrito();
 
     $item = Venta_detalle::where(
@@ -109,7 +116,8 @@ public function eliminar($id)
 }
 public function confirmar(){
     $carrito = $this->obtenerCarrito();
-
+    // Verifica que no esté vacío
+    // Redirige al checkout
     if ($carrito->total <= 0) {
         return redirect()->back()->with([
             'error' => 'Debe cargar al menos un producto al carrito para finalizar la compra.',

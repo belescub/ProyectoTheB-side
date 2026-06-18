@@ -13,9 +13,13 @@ class AdminController extends Controller
 {
     public function index()
     {
+         // Cuenta cantidad de clientes
         $totalClientes = Usuario::where('rol_id', 2)->count();
+        // Cuenta categorías
         $totalCategorias = Categoria::count();
+         // Cuenta productos
         $totalProductos = Producto::count();
+        // Cuenta ventas del mes actual
         $totalVentas = Venta_cabecera::whereMonth('fecha_venta', now()->month)
                                     ->whereYear('fecha_venta', now()->year)
                                     ->count();
@@ -26,8 +30,10 @@ class AdminController extends Controller
         // Esto trae TODO el inventario, pero ordenado por el más reciente primero
         $productos = Producto::latest()->get();
 
+        // Trae usuarios, incluso los eliminados (soft delete)
         $usuarios = Usuario::withTrashed()->get();
 
+         // Trae ventas con detalles y usuario
         $queryVentas = Venta_cabecera::with(['venta_detalles.producto', 'usuario'])->latest();
 
         // Si estamos en la pestaña de ventas, aplicamos los filtros
@@ -88,7 +94,7 @@ class AdminController extends Controller
             $productoEditar = Producto::find(request('editar'));
         }
         // -------------------------------------------
-
+        // Retorna dashboard admin con toda la info
         return view('backend.admin.dashboard', compact(
             'totalClientes',
             'totalCategorias', 
@@ -144,6 +150,7 @@ public function store(Request $request)
         return redirect('/admin')->with('success', '¡Producto agregado con éxito!');
     }
 
+    // Da de baja usuario (soft delete)
     public function darBaja($id){
     $usuario = Usuario::findOrFail($id);
 
@@ -156,7 +163,7 @@ public function store(Request $request)
 
     return redirect()->back()->with('success', 'Usuario dado de baja');
 }
-
+    // Convierte usuario en admin 
     public function hacerAdmin($id){
         $usuario = Usuario::findOrFail($id);
 
@@ -170,7 +177,7 @@ public function store(Request $request)
     // --------------------------------------------------------
     // FUNCIONES PARA EL INVENTARIO (EDITAR, ACTUALIZAR Y ELIMINAR)
     // --------------------------------------------------------
-
+     // Muestra formulario editar producto
     public function edit($id){
         $producto = Producto::findOrFail($id);
         $categorias = Categoria::all();
@@ -178,7 +185,7 @@ public function store(Request $request)
         // Retornamos una vista para editar el producto. 
         return view('backend.admin.editar', compact('producto', 'categorias'));
     }
-
+     // Actualiza producto existente
     public function update(Request $request, $id){
         $producto = Producto::findOrFail($id);
 
@@ -203,7 +210,7 @@ public function store(Request $request)
 
         return redirect('/admin?inventario=1')->with('success', '¡Producto actualizado correctamente!');
     }
-
+     // Elimina producto
     public function destroy($id){
         $producto = Producto::findOrFail($id);
         $producto->delete(); 

@@ -9,22 +9,43 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Usuario extends Authenticatable {
+
+    // Habilita factories, notificaciones y borrado lógico
     use HasFactory, Notifiable, SoftDeletes;
 
-    protected $table    = 'usuarios';
-    protected $fillable = ['nombre', 'email', 'password', 'rol_id'];
-    protected $hidden   = ['password', 'remember_token']; // nunca expuestos en JSON
+    // Nombre de la tabla
+    protected $table = 'usuarios';
+
+    // Campos permitidos para asignación masiva
+    protected $fillable = [
+        'nombre',
+        'email',
+        'password',
+        'rol_id'
+    ];
+
+    // Campos ocultos (no visibles en JSON)
+    protected $hidden = [
+        'password',
+        'remember_token'
+    ];
+
+    // Conversión automática de atributos
     protected function casts(): array {
         return [
-            'password' => 'hashed',       // hashea automáticamente al asignar
+            // Laravel hashea automáticamente la contraseña
+            'password' => 'hashed',
         ];
     }
 
-    // Relación: un Usuario pertenece a un Rol  →  se usa como $usuario->rol
+    // Relación: un usuario pertenece a un rol
+    // Ejemplo: $usuario->rol
     public function rol() {
         return $this->belongsTo(Rol::class, 'rol_id');
     }
-    //Relacion: usuario puede tener muchos tickets
+
+    // Relación: un usuario tiene muchas ventas
+    // Ejemplo: $usuario->ventas
     public function ventas(){
         return $this->hasMany(VentaCabecera::class, 'usuario_id');
     }

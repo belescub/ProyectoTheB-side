@@ -11,6 +11,10 @@ class CheckoutController extends Controller
 {
     public function index()
     {
+        // Busca carrito activo
+        // Si no existe, redirige
+        // Trae productos del carrito
+        // Muestra checkout
         $carrito = Venta_cabecera::where('usuario_id', auth()->id())
                                   ->where('estado', 'carrito')
                                   ->first();
@@ -38,6 +42,8 @@ class CheckoutController extends Controller
             'metodo_pago' => 'required',
             'metodo_entrega' => 'required'
         ]);
+        // Busca carrito
+        // Trae detalles de la compra
 
         $carrito = Venta_cabecera::where('usuario_id', auth()->id())
                                    ->where('estado', 'carrito')
