@@ -8,7 +8,7 @@ Ejecutar composer install y npm install.
 
 Copiar .env.example a .env y configurar la base de datos.
 
-Ejecutar php artisan migrate:fresh --seed para poblar la base de datos.
+Ejecutar php artisan migrate --seed para poblar la base de datos.
 
 IMPORTANTE: Ejecutar php artisan storage:link para poder visualizar las imágenes de los productos.
 
