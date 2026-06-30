@@ -3,72 +3,77 @@
 namespace App\Http\Controllers;
 
 use App\Models\Venta_cabecera;
-use App\Models\Venta_detalle; // Importamos el detalle
-use App\Models\Producto;      // Importamos producto porque necesitamos saber los precios
+use App\Models\Venta_detalle;
+use App\Models\Producto;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB; // <--- ¡Importante! Necesitamos esto
 
 class Venta_cabeceraController extends Controller
 {
+    /**
+     * Muestra el historial de ventas.
+     */
     public function index()
     {
-        // Traemos las venta_cabeceras. 
-        // Usamos with('detalles') para que traiga los renglones de una sola vez
-        $ventas = Venta_cabecera::with(['venta_detalles', 'usuario'])
-            ->latest()
-            ->get();
-        
+        $ventas = Venta_cabecera::with(['venta_detalles', 'usuario'])->latest()->get();
         return view('venta_cabeceras.index', compact('ventas'));
-        
     }
 
-    public function create(){
-        // Para hacer una venta, se necesita conocer el precio del producto
-        $productos = Producto::where('activo', true)->where('stock', '>', 0)->get();
-        return view('venta_cabeceras.create', compact('productos'));
-    }
-
-    public function store(Request $request){
-        // Validamos que nos manden productos y cantidades
-        // (Esto asume que el formulario manda arreglos: productos[] y cantidades[])
+    /**
+     * Procesa la venta final.
+     */
+    public function store(Request $request)
+    {
         $request->validate([
             'productos' => 'required|array',
             'cantidades' => 'required|array',
         ]);
 
-        // Creamos la venta vacía primero (necesitamos que nazca para tener el venta_id)
-        $venta_cabecera = Venta_cabecera::create([
-            'total' => 0 // Arranca en 0, lo calculamos ahora
-        ]);
+        // Usamos una transacción para garantizar integridad de datos
+        DB::beginTransaction();
 
-        $totalVenta = 0;
+        try {
+            $venta_cabecera = Venta_cabecera::create(['total' => 0, 'usuario_id' => auth()->id()]);
+            $totalVenta = 0;
 
-        // 3. Recorremos los productos que eligió el cliente
-        foreach ($request->productos as $index => $producto_id) {
-            $cantidad = $request->cantidades[$index];
-            $producto = Producto::find($producto_id);
+            foreach ($request->productos as $index => $producto_id) {
+                $producto = Producto::findOrFail($producto_id);
+                $cantidad = $request->cantidades[$index];
 
-            // Calculamos el subtotal de este renglón
-            $subtotal = $producto->precio * $cantidad;
-            $totalVenta += $subtotal;
+                // Validación de stock extra (seguridad backend)
+                if ($producto->stock < $cantidad) {
+                    throw new \Exception("Stock insuficiente para: {$producto->nombre}");
+                }
 
-            Venta_detalle::create([
-                'venta_cabecera_id' => $venta_cabecera->id, // Lo conectamos al ticket recién creado
-                'producto_id' => $producto->id,
-                'cantidad' => $cantidad,
-                'precio_unitario' => $producto->precio, // Congelamos el precio actual
-                'subtotal' => $subtotal
-            ]);
+                $subtotal = $producto->precio * $cantidad;
+                $totalVenta += $subtotal;
 
-            // Restar el stock del producto
-            $producto->stock = $producto->stock - $cantidad;
-            $producto->save();
+                Venta_detalle::create([
+                    'venta_cabecera_id' => $venta_cabecera->id,
+                    'producto_id' => $producto->id,
+                    'cantidad' => $cantidad,
+                    'precio_unitario' => $producto->precio,
+                    'subtotal' => $subtotal
+                ]);
+
+                $producto->decrement('stock', $cantidad); // Método más limpio
+            }
+
+            $venta_cabecera->update(['total' => $totalVenta]);
+
+            DB::commit(); // Si todo salió bien, guardamos todo
+            return redirect()->route('venta_cabeceras.index')->with('success', '¡Venta registrada!');
+
+        } catch (\Exception $e) {
+            DB::rollBack(); // Si hubo error, deshacemos todo lo anterior
+            return back()->with('error', $e->getMessage());
         }
-
-        // 4. Actualizamos el total real de la venta
-        $venta_cabecera->total = $totalVenta;
-        $venta_cabecera->save();
-
-        return redirect()->route('venta_cabeceras.index')->with('success', '¡Venta registrada con éxito!');
+    }
+    
+    public function create(){
+        // Para hacer una venta, se necesita conocer el precio del producto
+        $productos = Producto::where('activo', true)->where('stock', '>', 0)->get();
+        return view('venta_cabeceras.create', compact('productos'));
     }
 
     // Cambiamos "string $id" por "Venta $venta"

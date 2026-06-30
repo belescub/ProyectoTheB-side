@@ -21,7 +21,7 @@
 
             <td>{{ $item->cantidad }}</td>
 
-            <td>${{ $item->precio_unitario }}</td>
+            <td>${{ number_format($item->precio_unitario, 2, '.', ',') }}</td>
 
             <td>${{ $item->subtotal }}</td>
 
@@ -50,7 +50,10 @@
 
 </table>
 
-<h3>Total: ${{ $carrito->total }}</h3>
+<h3>
+    Total:
+    ${{ number_format($carrito->total, 2, ',', '.') }}
+</h3>
 
 <form
     action="{{ route('carrito.confirmar') }}"

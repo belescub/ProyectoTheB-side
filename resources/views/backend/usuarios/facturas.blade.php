@@ -14,7 +14,7 @@
                     <div>
                         <h6 class="mb-1 text-info">Factura Electrónica #{{ $factura->id }}</h6>
                         <small class="text-secondary">Emitida el {{ \Carbon\Carbon::parse($factura->fecha_venta)->format('d/m/Y') }}</small>
-                        <p class="mb-0 mt-2 fw-bold">Total: <span class="text-success">${{ number_format($factura->total, 2, ',', '.') }}</span></p>
+                        <p class="mb-0 mt-2 fw-bold">Total: <span class="text-success">${{ number_format($factura->total, 2, '.', ',') }}</span></p>
                     </div>
                     <a href="{{ route('facturas.show', $factura->id) }}" class="btn btn-sm btn-outline-light">
                         Visualizar y Descargar

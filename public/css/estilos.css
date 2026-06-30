@@ -543,3 +543,33 @@ body, p, label, .search-input, .form-control, .catalog-title {
         padding: 5px;
     }   
 }
+/* Color del borde y texto de los números */
+.pagination .page-link {
+    background-color: rgba(10, 10, 10, 0.8) !important; /* Mismo fondo oscuro de tus tarjetas */
+    border: 1px solid #77c040 !important;             /* Tu verde característico */
+    color: #77c040 !important;                        /* Tu verde para el texto */
+}
+
+/* Efecto al pasar el mouse por encima */
+.pagination .page-link:hover {
+    background-color: #77c040 !important;             /* Se vuelve verde el fondo */
+    color: white !important;                          /* Letra blanca */
+}
+
+/* Estilo del botón activo (el número en el que estás parado) */
+.pagination .page-item.active .page-link {
+    background-color: #77c040 !important;             /* Fondo verde */
+    border-color: #77c040 !important;
+    color: white !important;                          /* Letra blanca */
+}
+
+/* Estilo para los botones "Previous" y "Next" deshabilitados */
+.pagination .page-item.disabled .page-link {
+    background-color: rgba(10, 10, 10, 0.4) !important;
+    border-color: #555 !important;
+    color: #666 !important;
+}
+
+.text-muted {
+    color: #ffffff !important;
+}

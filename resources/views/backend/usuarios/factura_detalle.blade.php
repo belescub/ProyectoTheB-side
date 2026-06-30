@@ -57,8 +57,8 @@
                     {{-- Acceso al nombre del producto relacionado desde el detalle --}}
                     <td>{{ $detalle->producto->nombre }}</td> 
                     <td class="text-center">{{ $detalle->cantidad }}</td>
-                    <td class="text-end">${{ number_format($detalle->precio_unitario, 2, ',', '.') }}</td>
-                    <td class="text-end">${{ number_format($detalle->subtotal, 2, ',', '.') }}</td>
+                    <td class="text-end">${{ number_format($detalle->precio_unitario, 2, '.', ',') }}</td>
+                    <td class="text-end">${{ number_format($detalle->subtotal, 2, '.', ',') }}</td>
                 </tr>
                 @endforeach
             </tbody>
@@ -66,7 +66,7 @@
                 <tr>
                     <td colspan="2"></td>
                     <td class="text-end fw-bold fs-5">TOTAL:</td>
-                    <td class="text-end fw-bold fs-5 text-success">${{ number_format($compra->total, 2, ',', '.') }}</td>
+                    <td class="text-end fw-bold fs-5 text-success">${{ number_format($compra->total, 2, '.', ',') }}</td>
                 </tr>
             </tfoot>
         </table>

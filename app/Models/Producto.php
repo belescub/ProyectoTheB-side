@@ -39,4 +39,11 @@ class Producto extends Model{
     {
         return $this->belongsTo(Categoria::class);
     }
+    /**
+     * Funcion para los decimales, formatea el precio
+     */ 
+    public function getPrecioFormateadoAttribute(){
+    // number_format(número, decimales, separador_decimal, separador_miles)
+    return number_format($this->precio, 2, ',', '.');
+}
 }

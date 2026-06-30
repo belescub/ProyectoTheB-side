@@ -156,7 +156,7 @@
 
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <span style="color: #77c040; font-family: 'Bebas Neue'; font-size: 1.5rem; letter-spacing: 1px;">TOTAL:</span>
-                        <span id="total-texto" style="color: #77c040; font-size: 1.5rem; font-weight: bold;">${{ number_format($carrito->total, 2, ',', '.') }}</span>
+                        <span id="total-texto" style="color: #77c040; font-size: 1.5rem; font-weight: bold;">${{ number_format($carrito->total, 2, '.', ',') }}</span>
                     </div>
 
                     <button type="submit" class="btn w-100 py-3" style="background-color: #77c040 !important; color: #ffffff !important; border-radius: 30px; font-family: 'Bebas Neue'; letter-spacing: 1.5px; font-size: 1.3rem;">

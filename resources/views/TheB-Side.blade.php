@@ -75,7 +75,7 @@
 
         <div class="catalog-info mt-2">
             <h5>{{ $producto->nombre }}</h5>
-            <p>${{ number_format($producto->precio, 0, ',', '.') }}</p>
+            <p>${{ number_format($producto->precio, 0, '.', ',') }}</p>
 
             <a href="/carrito">
                 <i class="bi bi-cart-dash-fill"></i>

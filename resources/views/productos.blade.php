@@ -22,7 +22,7 @@
                     <div class="card-body text-white">
                         <h5 class="card-title" style="color: #77c040;">{{ $producto->nombre }}</h5>
                         <p class="card-text">{{ $producto->descripcion }}</p>
-                        <p class="card-text fw-bold">Precio: ${{ number_format($producto->precio, 2, ',', '.') }}</p>
+                        <p class="card-text fw-bold">Precio: {{ $producto->precio_formateado }}</p>
 
                         {{-- Verificamos si es admin --}}
                         @if(auth()->check() && auth()->user()->rol && strtolower(auth()->user()->rol->nombre) === 'admin')
@@ -50,5 +50,8 @@
             <h4 style="color: #77c040;">No hay productos disponibles en esta categoría.</h4>
         </div>
     @endforelse
+    <div class="mt-4 d-flex justify-content-center">
+            {{ $productos->links() }}
+    </div>
 </div>
 @endsection

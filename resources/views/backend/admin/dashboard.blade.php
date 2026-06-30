@@ -60,7 +60,7 @@
                             <span><i class="fas fa-plus-circle me-2" style="color: #023d0c;"></i> Agregar Nuevo Producto</span>
                             <i class="fas fa-chevron-right text-muted" style="font-size: 0.8rem;"></i>
                         </a>
-                        <a href="?inventario=1" class="btn d-flex align-items-center justify-content-between p-3 text-start transition" style="background-color: rgba(255, 255, 255, 0.03); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px;">
+                        <a href="{{ route('admin.index', ['inventario' => 1]) }}" class="btn d-flex align-items-center justify-content-between p-3 text-start transition" style="background-color: rgba(255, 255, 255, 0.03); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px;">
                             <span><i class="fas fa-boxes me-2" style="color: #023d0c;"></i> Administrar Inventario</span>
                             <i class="fas fa-chevron-right text-muted" style="font-size: 0.8rem;"></i>
                         </a>
@@ -224,7 +224,7 @@
                             <div class="row g-2 align-items-end mb-3">
                                 <div class="col-12 col-md-4">
                                     <label class="form-label text-light font-monospace" style="font-size: 0.75rem;">BÚSQUEDA</label>
-                                    <input type="text" name="buscar" value="{{ request('buscar') }}" class="form-control text-white" style="background-color: rgba(255, 255, 255, 0.86); border: 1px solid rgba(255,255,255,0.1);" placeholder="Ej: Taylor Swift, CD, Sabrina...">
+                                    <input type="text" name="buscar" value="{{ request('buscar') }}" class="form-control text-white" style="background-color: rgba(0, 0, 0, 0.86); border: 1px solid rgba(255,255,255,0.1);" placeholder="Ej: Taylor Swift, CD, Sabrina...">
                                 </div>
                                 <div class="col-12 col-md-3">
                                     <label class="form-label text-light font-monospace" style="font-size: 0.75rem;">FILTRAR POR</label>
@@ -233,17 +233,29 @@
                                         <option value="cliente" {{ request('criterio') == 'cliente' ? 'selected' : '' }} style="background-color: #111;">Cliente</option>
                                     </select>
                                 </div>
-                                <div class="col-12 col-md-3">
-                                    <label class="form-label text-light font-monospace" style="font-size: 0.75rem;">FECHA</label>
-                                    <select name="fecha" class="form-select text-white" style="background-color: rgba(20, 20, 20, 0.9); border: 1px solid rgba(255, 255, 255, 0.1);">
-                                        <option value="todas" {{ request('fecha') == 'todas' ? 'selected' : '' }} style="background-color: #111;">Todas las fechas</option>
-                                        <option value="hoy" {{ request('fecha') == 'hoy' ? 'selected' : '' }} style="background-color: #111;">Ventas de hoy</option>
-                                        <option value="semana" {{ request('fecha') == 'semana' ? 'selected' : '' }} style="background-color: #111;">Esta semana</option>
-                                        <option value="mes" {{ request('fecha') == 'mes' ? 'selected' : '' }} style="background-color: #111;">Hace un mes</option>
-                                        <option value="anio" {{ request('fecha') == 'anio' ? 'selected' : '' }} style="background-color: #111;">Hace un año</option>
-                                        <option value="mas_anio" {{ request('fecha') == 'mas_anio' ? 'selected' : '' }} style="background-color: #111;">Hace más de un año</option>
-                                    </select>
-                                </div>
+                              <div class="col-12 col-md-3">
+    <label class="form-label text-light font-monospace" style="font-size: 0.75rem;">
+        DESDE
+    </label>
+    <input
+        type="date"
+        name="fecha_desde"
+        class="form-control text-white"
+        value="{{ request('fecha_desde') }}"
+        style="background-color: rgba(20, 20, 20, 0.9); border: 1px solid rgba(255, 255, 255, 0.1);">
+</div>
+
+<div class="col-12 col-md-3">
+    <label class="form-label text-light font-monospace" style="font-size: 0.75rem;">
+        HASTA
+    </label>
+    <input
+        type="date"
+        name="fecha_hasta"
+        class="form-control text-white"
+        value="{{ request('fecha_hasta') }}"
+        style="background-color: rgba(20, 20, 20, 0.9); border: 1px solid rgba(255, 255, 255, 0.1);">
+</div>
                                 <div class="col-12 col-md-2 d-flex gap-2">
                                     <button type="submit" class="btn w-100 fw-bold text-uppercase" style="background-color: #64c23a; color: #111; border-radius: 20px; font-size: 0.85rem; padding: 8px 12px; border: none;">Filtrar</button>
                                     <a href="{{ url('/admin?ventas=1') }}" class="btn w-100 fw-bold text-uppercase d-flex align-items-center justify-content-center" style="background-color: #4a4a4a; color: #fff; border-radius: 20px; font-size: 0.85rem; padding: 8px 12px; text-decoration: none; border: none;">Ver Todo</a>
@@ -270,7 +282,7 @@
                                             <td>{{ $venta->id }}</td>
                                             <td>{{ $venta->usuario->nombre ?? 'Desconocido' }}</td>
                                             <td>{{ \Carbon\Carbon::parse($venta->fecha_venta)->format('d/m/Y H:i') }}</td>
-                                            <td>${{ number_format($venta->total, 2) }}</td>
+                                            <td>${{ number_format($venta->total, 2, '.', ',') }}</td>
                                             <td>
                                                 <ul class="mb-0">
                                                     @foreach($venta->venta_detalles as $detalle)
@@ -292,7 +304,7 @@
 
             @elseif(request()->has('inventario'))
                 {{-- ADMINISTRAR INVENTARIO --}}
-                <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+                <div class="table-responsive">
     <table class="table table-dark table-hover text-white mb-0" style="--bs-table-bg: transparent;">
         <thead style="position: sticky; top: 0; background-color: #1a1a1a; z-index: 1;">
             <tr>
@@ -312,7 +324,7 @@
                     <td>{{ $producto->nombre }}</td>
                     <td>{{ $producto->categoria->nombre }}</td>
                     <td>{{ $producto->stock }}</td>
-                    <td>${{ $producto->precio }}</td>
+                    <td>${{ $producto->precio_formateado }}</td>
                     <td>
                         @if($producto->stock > 0)
                             <span class="badge bg-success">Disponible</span>
@@ -321,7 +333,12 @@
                         @endif
                     </td>
                     <td>
-                        <a href="?editar={{ $producto->id }}" class="btn btn-warning btn-sm mb-1 mb-md-0">Editar</a>
+                        <a href="{{ route('admin.index', [
+                                    'inventario' => 1,
+                                    'editar' => $producto->id
+                                ]) }}"
+                            class="btn btn-warning btn-sm">Editar</a>
+                            
                         <form action="{{ route('admin.producto.eliminar', $producto->id) }}" method="POST" class="d-inline">
                             @csrf
                             @method('DELETE')
@@ -334,6 +351,9 @@
     </table>
 </div>
 </div>
+</div>
+<div class="d-flex justify-content-center mt-4">
+    {{ $productos->appends(request()->query())->links() }}
 </div>
           @elseif(request()->has('editar') && $productoEditar)
                 {{-- EDICIÓN DE PRODUCTO --}}
@@ -412,7 +432,7 @@
                                             <td class="font-monospace text-white">#{{ $producto->id }}</td>
                                             <td class="fw-semibold text-white">{{ $producto->nombre }}</td>
                                             <td><span class="badge bg-light text-dark">{{ $producto->categoria->nombre ?? 'N/A' }}</span></td>
-                                            <td class="text-white fw-bold">${{ number_format($producto->precio, 2) }}</td>
+                                            <td class="text-white fw-bold">{{ $producto->precio_formateado }}</td>
                                             <td class="text-center">
                                             @if($producto->stock > 0)
                                                 {{-- Insignia verde para mantener el estilo --}}

@@ -28,7 +28,7 @@
                                 {{ $compra->estado }}
                             </span>
                         </td>
-                        <td class="fw-bold text-success">${{ number_format($compra->total, 2, ',', '.') }}</td>
+                        <td class="fw-bold text-success">${{ number_format($compra->total, 2, '.', ',') }}</td>
                         <td class="text-center">
                             <a href="{{ route('facturas.show', $compra->id) }}" class="btn btn-sm btn-outline-info">
                                 <i class="bi bi-file-earmark-text"></i> Ver Factura

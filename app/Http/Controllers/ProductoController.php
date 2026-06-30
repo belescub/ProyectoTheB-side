@@ -23,7 +23,7 @@ class ProductoController extends Controller
          */
         $productos = Producto::with('categoria')
                              ->where('stock', '>', 0)
-                             ->get();
+                             ->paginate(12);
 
         return view('productos.index', compact('productos'));
     }
@@ -52,13 +52,26 @@ class ProductoController extends Controller
             'precio'   => 'required|numeric|min:0',
             'stock'    => 'required|integer|min:0',
             'categoria_id' => 'required|exists:categorias,id', //verifica que la categoria exista
-            'url_imagen'   => 'nullable|string|max:255', //deja pasar la imagen, o sea que la acepte
+            'url_imagen'   => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048', //deja pasar la imagen
         ]);
-        //Guardamos el producto mágicamente usando Mass Assignment ($fillable)
-        Producto::create($request->all());
+
+        // 1. Guardamos todos los datos del formulario en una variable
+        $datosProducto = $request->all();
+
+        // 2. Verificamos si el usuario subió un archivo físico de imagen
+        if ($request->hasFile('url_imagen')) {
+            // Guarda la imagen en storage/app/public/productos y devuelve la ruta
+            $rutaImagen = $request->file('url_imagen')->store('productos', 'public');
+            // Reemplazamos la imagen temporal por la ruta final para la base de datos
+            $datosProducto['url_imagen'] = $rutaImagen;
+        }
+
+        // 3. Guardamos el producto con la ruta de la imagen correcta
+        Producto::create($datosProducto);
+        
         //Redirigimos al usuario a la lista con un mensaje de exito
-        return redirect()->route('productos.index')
-                         ->with('success', 'Producto creado con exito');
+        return redirect()->route('admin.index', ['inventario' => 1])
+                            ->with('success', 'Producto creado con éxito');
     }
 
     /**
@@ -94,17 +107,25 @@ class ProductoController extends Controller
             'precio'       => 'required|numeric|min:0',
             'stock'        => 'required|integer|min:0',
             'categoria_id' => 'required|exists:categorias,id', 
-            'url_imagen'   => 'nullable|string|max:255',
+            'url_imagen'   => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
-        // Actualizamos el registro existente
-        $producto->update($request->all());
+        // 1. Guardamos todos los datos que vinieron del formulario edit
+        $datosProducto = $request->all();
+
+        // 2. Si el usuario subió una NUEVA imagen para reemplazar la vieja
+        if ($request->hasFile('url_imagen')) {
+            $rutaImagen = $request->file('url_imagen')->store('productos', 'public');
+            $datosProducto['url_imagen'] = $rutaImagen;
+        }
+
+        // 3. Actualizamos el registro existente con los datos (y la posible nueva imagen)
+        $producto->update($datosProducto);
 
         // Redirigimos a la lista
-        return redirect()->route('productos.index')
-                         ->with('success', '¡Producto actualizado correctamente!');
+        return redirect()->route('admin.index', ['inventario' => 1])
+                    ->with('success', '¡Producto actualizado correctamente!');
     }
-
     /**
      * Remove the specified resource from storage.
      * Elimina un producto de la base de datos
@@ -112,21 +133,21 @@ class ProductoController extends Controller
     public function destroy(Producto $producto)
     {
         $producto->delete();
-        return redirect()->route('productos.index')
-                        ->with('success', 'Producto eliminado de la lista');
+        return redirect()->route('admin.index', ['inventario' => 1])
+                        ->with('success', 'Producto eliminado correctamente');
     }
-public function buscar(Request $request){
-    // Capturamos lo que el usuario ingresó en el input name="q"
-    $query = $request->input('q');
+    public function buscar(Request $request){
+        // Capturamos lo que el usuario ingresó en el input name="q"
+        $query = $request->input('q');
 
-    // Buscamos en el modelo Producto coincidencias asegurando que obligatoriamente el stock sea mayor a 0
+        // Buscamos en el modelo Producto coincidencias asegurando que obligatoriamente el stock sea mayor a 0
         $productos = Producto::where('stock', '>', 0)
                              ->where(function($q) use ($query) {
                                  $q->where('nombre', 'LIKE', "%{$query}%")
                                    ->orWhere('descripcion', 'LIKE', "%{$query}%");
                              })
-                             ->get();
-    // Como productos.blade.php está en la raíz de views, solo ponemos 'productos'
-    return view('productos', compact('productos', 'query'));
-}
+                             ->paginate(12);
+        // Como productos.blade.php está en la raíz de views, solo ponemos 'productos'
+        return view('productos', compact('productos', 'query'));
+    }
 }

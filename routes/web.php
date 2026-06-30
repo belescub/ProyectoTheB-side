@@ -2,11 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ContactoController;
-use App\Http\Controllers\LoginController;
-use App\Http\Controllers\RegistroController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\CarritoController;
 use App\Http\Controllers\UsuarioController; 
 use App\Http\Controllers\ProductoController; 
@@ -29,15 +26,12 @@ Route::get('/contacto', function () { return view('contacto'); });
 Route::post('/contacto', [ContactoController::class, 'procesar']);
 Route::get('/terminosdeuso', function () { return view('terminosdeuso'); });
 Route::get('/privacidad', function() { return view('privacidad'); });
-Route::get('/quienessomos', function () { return view('quienes-somos'); });
 
 // --- Autenticación ---
 Route::get('/login', [AuthController::class, 'formularioLogin'])->name('login');
-// OJO: Dejé solo AuthController. Si tu lógica está en LoginController, cambiá la clase.
 Route::post('/login', [AuthController::class, 'autenticar']); 
 
 Route::get('/registro', [AuthController::class, 'formularioRegistro'])->name('registro');
-Route::post('/registro', [RegistroController::class, 'procesar']);
 
 // --- Catálogo y Buscador ---
 Route::get('/buscar', [ProductoController::class, 'buscar'])->name('productos.buscar');
@@ -47,27 +41,19 @@ Route::get('/quienessomos', function () {
 });
 
 /** Rutas de autenticación */
-Route::get('/login', [AuthController::class, 'formularioLogin'])->name('login');
-Route::post('/login', [AuthController::class, 'autenticar']);
 
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-
-Route::get('/registro', [AuthController::class, 'formularioRegistro'])->name('registro');
 Route::post('/registro', [AuthController::class, 'registrar']);
-
-Route::get('/cliente', [ClienteController::class, 'index']);
-Route::get('/admin', [AdminController::class, 'index']);
-
-Route::post('/admin/productos', [AdminController::class, 'store'])->name('admin.productos.store');
 
 Route::get('/productos/{categoria?}', function ($categoria = 'todos') {
     if ($categoria === 'todos') {
     
-        $productos = Producto::where('stock', '>', 0)->get(); 
+        $productos = Producto::where('stock', '>', 0)
+                     ->paginate(5); 
     } else {
         $productos = Producto::whereHas('categoria', function($query) use ($categoria) {
-            $query->where('nombre', $categoria);
-        })->where('stock', '>', 0)->get();
+                $query->where('nombre', $categoria);
+            })->where('stock', '>', 0)
+                ->paginate(12);
     }
     return view('productos', compact('productos', 'categoria'));
 })->name('productos');
@@ -100,28 +86,27 @@ Route::middleware(['auth'])->group(function () {
 
 
 /* =========================================
-   3. RUTAS DE ADMINISTRADOR (Requiere Auth y Rol Admin)
+   3. RUTAS DE ADMINISTRADOR 
    ========================================= */
 
+// Usamos ->prefix('admin') para que todas empiecen con /admin automáticamente
+// Y ->middleware(['auth', 'admin']) para que no entre nadie que no sea administrador
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     
-    // Panel y Gestión General
-    Route::get('/', [AdminController::class, 'index']);
-    Route::post('/store', [AdminController::class, 'store']);
+    // AdminController solo maneja el dashboard
+    Route::get('/', [AdminController::class, 'index'])->name('admin.index');
     
-    // Gestión de Productos
-    Route::post('/productos', [AdminController::class, 'store'])->name('admin.productos.store');
-    Route::get('/productos/{id}/editar', [AdminController::class, 'edit'])->name('admin.producto.editar');
-    Route::put('/productos/{id}', [AdminController::class, 'update'])->name('admin.producto.update');
-    Route::delete('/productos/{id}', [AdminController::class, 'destroy'])->name('admin.producto.eliminar');
+    // ProductoController ahora maneja sus propios métodos
+    Route::post('/productos', [ProductoController::class, 'store'])->name('admin.productos.store');
+    Route::get('/productos/{producto}/editar', [ProductoController::class, 'edit'])->name('admin.producto.editar');
+    Route::put('/productos/{producto}', [ProductoController::class, 'update'])->name('admin.producto.update');
+    Route::delete('/productos/{producto}', [ProductoController::class, 'destroy'])->name('admin.producto.eliminar');
 
-    // Gestión de Usuarios
-    Route::put('/usuario/{id}/baja', [AdminController::class, 'darBaja'])->name('admin.usuario.baja');
-    Route::delete('/usuario/{id}', [AdminController::class, 'darBaja']); 
-    Route::put('/usuario/{id}/hacer-admin', [AdminController::class, 'hacerAdmin'])->name('admin.usuario.hacerAdmin');
-    Route::put('/hacer-admin/{id}', [AdminController::class, 'hacerAdmin']); 
-
-    // Gestión de Consultas
+    // UsuarioController ahora maneja sus propios métodos
+    Route::put('/usuario/{id}/baja', [UsuarioController::class, 'destroy'])->name('admin.usuario.baja');
+    Route::put('/usuario/{id}/hacer-admin', [UsuarioController::class, 'hacerAdmin'])->name('admin.usuario.hacerAdmin');
+    
+    // AdminConsultaController maneja las consultas
     Route::get('/consultas', [AdminConsultaController::class, 'index'])->name('admin.consultas.index');
     Route::post('/consultas/{consulta}/toggle-leido', [AdminConsultaController::class, 'toggleLeido'])->name('admin.consultas.leido');
     Route::post('/consultas/{consulta}/responder', [AdminConsultaController::class, 'responder'])->name('admin.consultas.responder');
